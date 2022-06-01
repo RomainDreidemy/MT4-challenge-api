@@ -8,6 +8,8 @@ services:
     command: /bin/bash -c "while sleep 1000; do :; done"
     container_name: api_challenge
     working_dir: /server
+    ports:
+      - 5050:5050
     networks:
       - app-network
     volumes:

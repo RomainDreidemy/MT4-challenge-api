@@ -6,21 +6,25 @@ import { IUpdateResponse } from '../types/api/IUpdateResponse';
 import { IUser, IUserCreate, IUserUpdate } from '../types/tables/user/IUser';
 import {IAuthenticationBody} from "../types/api/authentication/IAuthenticationBody";
 
-const READ_COLUMNS = ['userId', 'familyName', 'givenName', 'email'];
+const READ_COLUMNS = ['id', 'email', 'batch_id'];
 
 /**
  * Un utilisateur de la plateforme.
  */
 @Route("/login")
-@Security('jwt')
 export class UserController {
 
   /**
    * Envoyer un mail à l'utilisateur pour ce connecter.
    */
   @Post()
-  public async getUsers(@Body() body: IAuthenticationBody): Promise<IIndexResponse<IUser>> {
-    return Crud.Index<IUser>({ page: 0, limit: 2 }, 'user', READ_COLUMNS);
+  public async getUsers(@Body() body: IAuthenticationBody): Promise<string> {
+
+    const user = await Crud.Read<IUser>('user', 'email', body.email, READ_COLUMNS);
+
+    console.log(user)
+
+    return 'toto';
   }
 
 }
