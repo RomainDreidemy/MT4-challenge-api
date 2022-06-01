@@ -1,12 +1,12 @@
 create table if not exists `user` (
   `id` int primary key auto_increment,
-  `email` int unique,
+  `email` varchar(255) unique,
   `batch_id` int NOT NULL
 );
 
 create table if not exists `batch` (
   `id` int primary key auto_increment,
-  `name` int unique
+  `name` varchar(255) unique
 );
 
 create table if not exists `batch_challenge` (
@@ -16,7 +16,7 @@ create table if not exists `batch_challenge` (
 
 create table if not exists `challenge` (
   `id` int primary key auto_increment,
-  `name` int unique,
+  `name` varchar(255) unique,
   `batch_id` int not null
 );
 
