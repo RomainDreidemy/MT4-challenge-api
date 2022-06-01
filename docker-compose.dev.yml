@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.dev
+    command: /bin/bash -c "while sleep 1000; do :; done"
+    container_name: api_challenge
+    working_dir: /server
+    networks:
+      - app-network
+    volumes:
+      # Nous allons préciser le dossier local
+      - .:/server:cached
+
+  database:
+    image: mariadb
+    restart: always
+    container_name: database_challenge
+    ports:
+      - "3309:3306"
+    env_file:
+      - ./database/.env.dev
+    command: [
+      "--character-set-server=utf8mb4",
+      "--collation-server=utf8mb4_unicode_ci",
+    ]
+    volumes:
+      - ./database/dbms-data:/var/lib/mysql
+      - ./database/mariadb.cnf:/etc/mysql/mariadb.cnf
+      # Pointer vers un dossier qui aura des scripts d'initialisation de notre base
+      - ./database/dev-initdb.d:/docker-entrypoint-initdb.d
+      # Ajouter le DDL qui va tourner en dernier
+      - ./database/ddl/ddl.sql:/docker-entrypoint-initdb.d/999-ddl.sql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
