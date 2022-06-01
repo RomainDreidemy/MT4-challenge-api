@@ -15,9 +15,9 @@ export class DB {
   static get Connection(): Pool {
     if (!this.POOL) {
       this.POOL = mysql.createPool({
-        host: process.env.DB_HOST || 'database_challenge',
+        host: process.env.DB_HOST || 'database',
         user: process.env.DB_USER || 'api-dev',
-        database: process.env.DB_DATABASE || 'database_challenge',
+        database: process.env.DB_DATABASE || 'mtdb',
         password: process.env.DB_PASSWORD || 'api-dev-password',
       });
     }
