@@ -1,5 +1,5 @@
 {
-  "exec": "npm run swagger && ts-node src/api.ts",
+  "exec": "tsoa spec-and-routes && ts-node src/api.ts",
   "watch": ["src"],
   "ignore": ["src/routes/routes.ts"],
   "ext": "ts"
