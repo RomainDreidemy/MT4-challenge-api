@@ -1,10 +1,9 @@
-import { Body, Delete, Get, Path, Post, Put, Query, Route, Security } from 'tsoa';
+import { Body, Post, Route } from 'tsoa';
 import { Crud } from '../classes/Crud';
-import { ICreateResponse } from '../types/api/ICreateResponse';
-import { IIndexResponse } from '../types/api/IIndexQuery';
-import { IUpdateResponse } from '../types/api/IUpdateResponse';
-import { IUser, IUserCreate, IUserUpdate } from '../types/tables/user/IUser';
+import { IUser, IUserCreate } from '../types/tables/user/IUser';
 import {IAuthenticationBody} from "../types/api/authentication/IAuthenticationBody";
+import {ApiError} from "../classes/Errors/ApiError";
+import {ErrorCode} from "../classes/Errors/ErrorCode";
 
 const READ_COLUMNS = ['id', 'email', 'batch_id'];
 
@@ -20,9 +19,19 @@ export class UserController {
   @Post()
   public async getUsers(@Body() body: IAuthenticationBody): Promise<string> {
 
-    const user = await Crud.Read<IUser>('user', 'email', body.email, READ_COLUMNS);
+    try {
+      const user = await Crud.Read<IUser>('user', 'email', body.email, READ_COLUMNS);
+    } catch (err: any) {
 
-    console.log(user)
+      if (err.structured === 'sql/not-found') {
+        const response = await Crud.Create<IUserCreate>({ email: body.email, batch_id: 1 }, 'user');
+
+        console.log(response);
+      } else {
+        throw new ApiError(ErrorCode.BadRequest, 'internal/unknown', `Internal server error`);
+      }
+    }
+
 
     return 'toto';
   }

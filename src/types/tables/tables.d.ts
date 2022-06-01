@@ -1,5 +1,3 @@
-export type DbTable = 
-  'user' |
-  'user_file' |
-  'film'
-;  
+export type DbTable =
+  'user'
+;
