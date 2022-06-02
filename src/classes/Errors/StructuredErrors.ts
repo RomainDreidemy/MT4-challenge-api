@@ -8,6 +8,8 @@ export type StructuredErrors =
 
   // Authorization
   'auth/missing-header' |
+  'auth/bad-header' |
+  'auth/invalid-jwt' |
   'auth/unknown-email' |
 
   // Mailer |
