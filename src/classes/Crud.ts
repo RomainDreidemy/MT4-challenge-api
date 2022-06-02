@@ -65,7 +65,7 @@ export class Crud {
         id: data[0].insertId
       }
     } else {
-      throw new ApiError(ErrorCode.BadRequest, 'validation/failed', 'Data did not pass validation', validator.errors);
+        throw new ApiError(ErrorCode.BadRequest, 'validation/failed', 'Data did not pass validation', validator.errors);
     }
   }
 
@@ -83,14 +83,18 @@ export class Crud {
     }
   }
 
-  public static async Read<T>(table: DbTable, idName: string, idValue: number|string, columns: string[]): Promise<T> {
+  public static async Read<T>(table: DbTable, idName: string, idValue: number|string, columns: string[], errorIfNotFound: boolean = true): Promise<T|null> {
     const db = DB.Connection;
     const data = await db.query<T[] & RowDataPacket[]>(`select ${columns.join(',')} from ${table} where ${idName} = ?`, [idValue]);
 
     if (data[0].length > 0) {
       return data[0][0];
     } else {
-      throw new ApiError(ErrorCode.BadRequest, 'sql/not-found', `Could not read row with ${idName} = ${idValue}`);
+      if (errorIfNotFound) {
+        throw new ApiError(ErrorCode.BadRequest, 'sql/not-found', `Could not read row with ${idName} = ${idValue}`);
+      }
+
+      return null;
     }
   }
 

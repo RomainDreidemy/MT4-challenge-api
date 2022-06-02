@@ -1,3 +1,7 @@
 export type DbTable =
-  'user'
+  'user' |
+  'challenge' |
+  'batch' |
+  'batch_challenge' |
+  'score'
 ;

@@ -13,30 +13,7 @@
         "authorizationUrl": "http://swagger.io/api/oauth/dialog"
       }
     },
-    "specMerging": "recursive",
-    "spec": {
-      "paths": {
-        "/auth/user/{userId}/file": {
-          "post": {
-            "requestBody": {
-              "content": {
-                "multipart/form-data": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "file": {
-                        "type": "string",
-                        "format": "binary"
-                      }
-                    }
-                  }
-                }
-              }
-            }            
-          }
-        }
-      }
-    }
+    "specMerging": "recursive"
   },
   "routes": {
     "routesDir": "./src/routes",
