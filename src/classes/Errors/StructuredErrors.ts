@@ -1,20 +1,19 @@
-export type StructuredErrors = 
+export type StructuredErrors =
   // SQL
-  'sql/failed' |  
+  'sql/failed' |
   'sql/not-found' |
 
   // Crud
-  'validation/failed' | 
-    
+  'validation/failed' |
+
   // Authorization
   'auth/missing-header' |
+  'auth/bad-header' |
+  'auth/invalid-jwt' |
   'auth/unknown-email' |
 
-  // Files
-  'object/invalid-multipart' |
-  'object/error-transmitting' |
-  'object/invalid-response' |
-  'object/key-not-found-in-storage' |
+  // Mailer |
+  'mailer/unknown' |
 
   // Default
   'internal/unknown'

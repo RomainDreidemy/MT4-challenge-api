@@ -4,16 +4,11 @@
  * Un utilisateur de la plateforme.
  */
 export interface IUser {
-  /** ID Unique */
-  userId: number;
-  /** Nom de famille */
-  familyName?: string;
-  /** Prénom */
-  givenName?: string;
-  /** Adress e-mail, ceci doit être unique est sera utilisé comme identifiant pour l'utilisateur */
+  id: number;
   email: string;
+  batch_id: number;
 }
 
-export type IUserCreate = Omit<IUser, 'userId'>;
+export type IUserCreate = Omit<IUser, 'id'>;
 export type IUserUpdate = Partial<IUserCreate>;
 export type IUserRO = Readonly<IUser>;

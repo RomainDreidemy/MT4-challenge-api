@@ -14,7 +14,7 @@ import { ErrorCode } from './Errors/ErrorCode';
 
 /**
  * Class qui fournit des fonctions utilitaires pour les opérations ICRUD.
- * 
+ *
  * @todo Pour l'instant la fonction Index ne marche que sur une seule table. Ajouter une fonction qui permet de faire des requêtes plus complexes (avec des joins et/ou aggrégations). Est-qu'il est possible de généraliser au maximum une telle opération, tout en laissant de la fléxibilité ?
  */
 export class Crud {
@@ -24,12 +24,12 @@ export class Crud {
    * @param query L'objet contenant les paramètres optionnels de pagination.
    * @param table La table de la base de données à interroger
    * @param columns Un tableau de colonnes à retourner
-   * @returns IIndexResponse contenant les résultats de la recherche.   
+   * @returns IIndexResponse contenant les résultats de la recherche.
    * @todo Ajouter la possibilité de préciser les colonnes dans la requête ?
    */
   public static async Index<T>(query: IIndexQuery, table: DbTable, columns: string[], where?: IReadWhere) : Promise<IIndexResponse<T>> {
 
-    const db = DB.Connection;      
+    const db = DB.Connection;
     // On suppose que le params query sont en format string, et potentiellement
     // non-numérique, ou corrompu
     const page = Math.max(query.page || 0, 0);
@@ -39,7 +39,7 @@ export class Crud {
 
     // D'abord, récupérer le nombre total
     const whereClause = (where ? `where ?`: '');
-    const count = await db.query<ITableCount[] & RowDataPacket[]>(`select count(*) as total from ${table} ${whereClause}`, [where]);      
+    const count = await db.query<ITableCount[] & RowDataPacket[]>(`select count(*) as total from ${table} ${whereClause}`, [where]);
 
     // Récupérer les lignes
     const sqlBase = `select ${columns.join(',')} from ${table} ${whereClause} limit ? offset ?`;
@@ -63,9 +63,9 @@ export class Crud {
 
       return {
         id: data[0].insertId
-      }   
+      }
     } else {
-      throw new ApiError(ErrorCode.BadRequest, 'validation/failed', 'Data did not pass validation', validator.errors);      
+        throw new ApiError(ErrorCode.BadRequest, 'validation/failed', 'Data did not pass validation', validator.errors);
     }
   }
 
@@ -77,30 +77,34 @@ export class Crud {
 
       return {
         rows: data[0].affectedRows
-      }   
+      }
     } else {
-      throw new ApiError(ErrorCode.BadRequest, 'validation/failed', 'Data did not pass validation', validator.errors);      
+      throw new ApiError(ErrorCode.BadRequest, 'validation/failed', 'Data did not pass validation', validator.errors);
     }
   }
 
-  public static async Read<T>(table: DbTable, idName: string, idValue: number, columns: string[]): Promise<T> {
+  public static async Read<T>(table: DbTable, idName: string, idValue: number|string, columns: string[], errorIfNotFound: boolean = true): Promise<T|null> {
     const db = DB.Connection;
-    const data = await db.query<T[] & RowDataPacket[]>(`select ${columns.join(',')} from ${table} where ${idName} = ?`, [idValue]);      
+    const data = await db.query<T[] & RowDataPacket[]>(`select ${columns.join(',')} from ${table} where ${idName} = ?`, [idValue]);
 
     if (data[0].length > 0) {
       return data[0][0];
     } else {
-      throw new ApiError(ErrorCode.BadRequest, 'sql/not-found', `Could not read row with ${idName} = ${idValue}`);
+      if (errorIfNotFound) {
+        throw new ApiError(ErrorCode.BadRequest, 'sql/not-found', `Could not read row with ${idName} = ${idValue}`);
+      }
+
+      return null;
     }
   }
 
   public static async Delete(table: DbTable, idName: string, idValue: number): Promise<IUpdateResponse> {
     const db = DB.Connection;
-    const data = await db.query<OkPacket>(`delete from ${table} where ${idName} = ?`, [idValue]);      
+    const data = await db.query<OkPacket>(`delete from ${table} where ${idName} = ?`, [idValue]);
 
     return {
       rows: data[0].affectedRows
-    }  
+    }
   }
 
 }

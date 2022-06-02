@@ -1,5 +1,5 @@
 import Ajv, { JSONSchemaType } from 'ajv';
-import { IUserCreate, IUserUpdate } from './IUser';
+import { IUserCreate, IUserUpdate } from './IChallenge';
 
 
 
