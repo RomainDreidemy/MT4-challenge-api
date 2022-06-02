@@ -18,27 +18,26 @@ export class Mailer {
   public static async send(emailTo: string, subject: string, textMessage: string, htmlMessage: string) {
     const transporter = this.Transporter;
 
-    const request = transporter
-      .post("send", {'version': 'v3.1'})
-      .request({
-        Messages: [{
-          "From": {
-            "Email": FROM_EMAIL,
-            "Name": FROM_NAME
-          },
-          "To": [{
-            "Email": emailTo,
-            "Name": emailTo
-          }],
-          "Subject": subject,
-          "TextPart": textMessage,
-          "HTMLPart": htmlMessage
-        }]
-      });
-
-    request
-      .catch((err) => {
-        throw new ApiError(ErrorCode.InternalError, 'mailer/unknown', `Mailer server error`, err);
-      })
+    try {
+      await transporter
+        .post("send", {'version': 'v3.1'})
+        .request({
+          Messages: [{
+            "From": {
+              "Email": FROM_EMAIL,
+              "Name": FROM_NAME
+            },
+            "To": [{
+              "Email": emailTo,
+              "Name": emailTo
+            }],
+            "Subject": subject,
+            "TextPart": textMessage,
+            "HTMLPart": htmlMessage
+          }]
+        });
+    } catch (err) {
+      throw new ApiError(ErrorCode.InternalError, 'mailer/unknown', `Mailer server error`, err);
+    }
   }
 }
