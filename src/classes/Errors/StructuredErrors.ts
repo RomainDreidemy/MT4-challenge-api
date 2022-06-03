@@ -15,6 +15,9 @@ export type StructuredErrors =
   // Mailer |
   'mailer/unknown' |
 
+  // SSH
+  'ssh/bad-information' |
+
   // Default
   'internal/unknown'
 ;
