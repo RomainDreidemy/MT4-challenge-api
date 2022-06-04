@@ -1,16 +1,37 @@
 # MT4 - Challenge
 
-## Installation
+## Development
 
-### Development
+### Installation
+
+#### Environment variables
 ```bash
 cp ./database/.env.example ./database/.env.dev
+```
 
+#### Start the containers
+````bash
 docker-compose -f docker-compose.dev.yml up -d
+````
 
-docker exec -it api_challenge bash
+#### Run the api
+First go into your api container `docker exec -it api_challenge bash`.  
+Install the dependencies `npm install` and run `npm run api` 
 
-npm install
+### Reset the database
 
-npm run api
+#### Remove the database container
+```bash
+docker-compose -f docker-compose.dev.yml stop database
+docker-compose -f docker-compose.dev.yml rm --force database
+```
+
+#### Remove the database volume folder
+```bash
+rm -rf ./database/dbms-data
+```
+
+#### Restart the database container
+```bash
+docker-compose -f docker-compose.dev.yml up -d database
 ```
