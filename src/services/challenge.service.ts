@@ -1,9 +1,9 @@
-import {ISSHConfig} from "../types/classes/SSH/ISSH";
 import {IChallengeResponse} from "../types/api/challenge/IChallengeResponse";
 import {ApiError} from "../classes/Errors/ApiError";
 import {ErrorCode} from "../classes/Errors/ErrorCode";
 import {IChallengeStepResponse, IChallengeTest} from "../types/services/Ichallenge";
 import {IMysqlThroughSSHConfig} from "../types/classes/IMysqlThroughSSHConfig";
+import {ChallengeError} from "../classes/Errors/ChallengeError";
 
 export abstract class ChallengeService {
   protected config: IMysqlThroughSSHConfig;
@@ -11,18 +11,10 @@ export abstract class ChallengeService {
   protected tests: IChallengeTest[];
   protected points: number = 0;
 
-  protected constructor(config: IMysqlThroughSSHConfig, pointsToWin: number = 20, tests: IChallengeTest[]) {
+  protected constructor(config: IMysqlThroughSSHConfig, tests: IChallengeTest[]) {
     this.config       = config;
     this.responses    = [];
     this.tests        = tests;
-  }
-
-  public getPoints(): number {
-    return this.points;
-  }
-
-  public getPointsToWin(): number {
-    return this.pointsToWin;
   }
 
   get pointsToWin() {
@@ -45,7 +37,44 @@ export abstract class ChallengeService {
   }
 
   public async start(): Promise<void> {
-    throw new ApiError(ErrorCode.InternalError, 'internal/unknown','You have to implement the method start() !');
+    try {
+      let index = 0;
+      while (index < this.tests.length) {
+        this.responses.push( await this.playTest(this.tests[index]));
+        index += 1;
+      }
+
+    } catch (err) {
+      if (err instanceof ChallengeError) {
+        this.responses.push(err.getApiStepResponse());
+      } else {
+        throw new ApiError(ErrorCode.InternalError, 'internal/unknown', 'Internal server error', err);
+      }
+    }
+  }
+
+  private async playTest(test: IChallengeTest): Promise<IChallengeStepResponse> {
+    const {subject, points, successMessage, errorMessage, callback} = test;
+
+    const stepResponse: IChallengeStepResponse = {
+      subject,
+      status: false,
+      points,
+      message: ''
+    }
+
+    try {
+      await callback(this.config);
+
+      stepResponse.status = true;
+      stepResponse.message = successMessage;
+      this.addPoints(stepResponse.points);
+
+      return stepResponse;
+
+    } catch (err) {
+      throw new ChallengeError(stepResponse, errorMessage);
+    }
   }
 
   protected addPoints(points: number): void {
