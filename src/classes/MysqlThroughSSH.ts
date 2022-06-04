@@ -5,31 +5,32 @@ import {IMysqlThroughSSHConfig} from "../types/classes/IMysqlThroughSSHConfig";
 export class MysqlThroughSSH {
 
   public static connect(config: IMysqlThroughSSHConfig): Promise<Connection> {
-    const sshClient = new Client();
+      const sshClient = new Client();
 
-    return new Promise((resolve, reject) => {
-      sshClient.on('ready', () => {
-        sshClient.forwardOut(
-          '127.0.0.1',
-          config.database_port,
-          config.ssh_host,
-          config.database_port,
-          (err, stream) => {
-            if (err) {
-              reject(err);
-            }
-
-            const connection = mysql.createConnection(this.getMysqlConnectionOptions(config, stream));
-
-            connection.connect((error) => {
-              if (error) {
-                reject(error);
+      return new Promise((resolve, reject) => {
+        sshClient.on('ready', () => {
+          sshClient.forwardOut(
+            '127.0.0.1',
+            config.database_port,
+            config.ssh_host,
+            config.database_port,
+            (err, stream) => {
+              if (err) {
+                reject(err);
               }
-              resolve(connection);
+
+              const connection = mysql.createConnection(this.getMysqlConnectionOptions(config, stream));
+
+              connection.connect((error) => {
+                if (error) {
+                  reject(error);
+                }
+                resolve(connection);
+              });
             });
-          });
-      }).connect(this.getSshConnectConfig(config));
-    })}
+        }).connect(this.getSshConnectConfig(config));
+      })
+  }
 
   private static getMysqlConnectionOptions(config: IMysqlThroughSSHConfig, stream: ClientChannel): ConnectionOptions {
     return {

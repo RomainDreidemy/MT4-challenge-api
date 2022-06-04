@@ -2,20 +2,19 @@ import {ISSHConfig} from "../types/classes/SSH/ISSH";
 import {IChallengeResponse} from "../types/api/challenge/IChallengeResponse";
 import {ApiError} from "../classes/Errors/ApiError";
 import {ErrorCode} from "../classes/Errors/ErrorCode";
-import {IChallengeStepResponse} from "../types/services/Ichallenge";
+import {IChallengeStepResponse, IChallengeTest} from "../types/services/Ichallenge";
 import {IMysqlThroughSSHConfig} from "../types/classes/IMysqlThroughSSHConfig";
 
 export abstract class ChallengeService {
   protected config: IMysqlThroughSSHConfig;
-  protected pointsToWin: number;
   protected responses: IChallengeStepResponse[];
-
+  protected tests: IChallengeTest[];
   protected points: number = 0;
 
-  protected constructor(config: IMysqlThroughSSHConfig, pointsToWin: number = 20) {
+  protected constructor(config: IMysqlThroughSSHConfig, pointsToWin: number = 20, tests: IChallengeTest[]) {
     this.config       = config;
-    this.pointsToWin  = pointsToWin;
     this.responses    = [];
+    this.tests        = tests;
   }
 
   public getPoints(): number {
@@ -24,6 +23,12 @@ export abstract class ChallengeService {
 
   public getPointsToWin(): number {
     return this.pointsToWin;
+  }
+
+  get pointsToWin() {
+    return this.tests.reduce((accumulator, test) => {
+      return accumulator + test.points;
+    }, 0)
   }
 
   public getApiResponse(): IChallengeResponse {
