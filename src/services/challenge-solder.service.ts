@@ -1,17 +1,17 @@
-import {ISSHConfig} from "../types/classes/SSH/ISSH";
 import {ChallengeService} from "./challenge.service";
 import {IChallengeStepResponse} from "../types/services/Ichallenge";
-import {SSH} from "../classes/SSH";
 import {ApiError} from "../classes/Errors/ApiError";
 import {ChallengeError} from "../classes/Errors/ChallengeError";
 import {ErrorCode} from "../classes/Errors/ErrorCode";
+import {MysqlThroughSSH} from "../classes/MysqlThroughSSH";
+import {IMysqlThroughSSHConfig} from "../types/classes/IMysqlThroughSSHConfig";
 
 const POINTS_TO_WIN = 25;
 
 export class ChallengeSolderService extends ChallengeService {
 
-  public constructor(sshConfig: ISSHConfig) {
-    super(sshConfig, POINTS_TO_WIN);
+  public constructor(config: IMysqlThroughSSHConfig) {
+    super(config, POINTS_TO_WIN);
   }
 
   async start(): Promise<void> {
@@ -34,16 +34,19 @@ export class ChallengeSolderService extends ChallengeService {
       message: ''
     }
 
-    const server = await SSH.getConnection(this.sshConfig);
+    console.log(this.config);
 
-    const response = await server.execCommand('mysql');
+    try {
+      const response = await MysqlThroughSSH.query('show tables', this.config);
 
-    if (response.stdout.length > 0) {
+      console.log(response)
+
       stepResponse.status = true;
       stepResponse.message = 'Nous avons trouvé mysql sur votre instance.';
       this.addPoints(stepResponse.points);
-    } else {
-      throw new ChallengeError(stepResponse,"Nous n'avons pas trouvé mysql sur votre instance.")
+
+    } catch (err) {
+      throw new ChallengeError(stepResponse,"Nous n'avons pas trouvé mysql sur votre instance.");
     }
 
     return stepResponse;

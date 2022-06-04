@@ -4,7 +4,7 @@ import {IMysqlThroughSSHConfig} from "../types/classes/IMysqlThroughSSHConfig";
 
 export class MysqlThroughSSH {
 
-  private static connect(config: IMysqlThroughSSHConfig): Promise<Connection> {
+  public static connect(config: IMysqlThroughSSHConfig): Promise<Connection> {
     const sshClient = new Client();
 
     return new Promise((resolve, reject) => {
@@ -21,7 +21,12 @@ export class MysqlThroughSSH {
 
             const connection = mysql.createConnection(this.getMysqlConnectionOptions(config, stream));
 
-            resolve(connection);
+            connection.connect((error) => {
+              if (error) {
+                reject(error);
+              }
+              resolve(connection);
+            });
           });
       }).connect(this.getSshConnectConfig(config));
     })}
@@ -46,5 +51,19 @@ export class MysqlThroughSSH {
       username: config.ssh_username,
       privateKey: config.ssh_privateKey
     }
+  }
+
+  public static async query(query: string, config: IMysqlThroughSSHConfig): Promise<any> {
+    const connection = await this.connect(config);
+
+    return new Promise((resolve, reject) => {
+      connection.query(query, (err, result) => {
+        if (err) {
+          reject(err);
+        }
+
+        resolve(result);
+      })
+    })
   }
 }

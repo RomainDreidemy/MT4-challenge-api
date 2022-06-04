@@ -3,16 +3,17 @@ import {IChallengeResponse} from "../types/api/challenge/IChallengeResponse";
 import {ApiError} from "../classes/Errors/ApiError";
 import {ErrorCode} from "../classes/Errors/ErrorCode";
 import {IChallengeStepResponse} from "../types/services/Ichallenge";
+import {IMysqlThroughSSHConfig} from "../types/classes/IMysqlThroughSSHConfig";
 
 export abstract class ChallengeService {
-  protected sshConfig: ISSHConfig;
+  protected config: IMysqlThroughSSHConfig;
   protected pointsToWin: number;
   protected responses: IChallengeStepResponse[];
 
   protected points: number = 0;
 
-  protected constructor(sshConfig: ISSHConfig, pointsToWin: number = 20) {
-    this.sshConfig    = sshConfig;
+  protected constructor(config: IMysqlThroughSSHConfig, pointsToWin: number = 20) {
+    this.config       = config;
     this.pointsToWin  = pointsToWin;
     this.responses    = [];
   }
