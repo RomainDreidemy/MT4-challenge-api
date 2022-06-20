@@ -13,13 +13,13 @@ export class UserServices {
   public static async authenticate(email: string, challenge_id: number) {
     const challenge: IChallenge|null = await Crud.Read<IChallenge>('challenge', 'id', challenge_id, [ 'id', 'name', 'batch_id' ], false);
 
-    if (!!challenge) {
+    if (challenge === null) {
       throw new ApiError(ErrorCode.BadRequest, 'sql/not-found', `Could not read challenge row with id = ${challenge_id}`);
     }
 
     let user = await Crud.Read<IUser>('user', 'email', email, READ_COLUMNS);
 
-    if (!!user) {
+    if (user === null) {
       await Crud.Create<IUserCreate>({ email: email, batch_id: challenge.batch_id }, 'user');
     }
 
