@@ -17,7 +17,7 @@ export class UserServices {
       throw new ApiError(ErrorCode.BadRequest, 'sql/not-found', `Could not read challenge row with id = ${challenge_id}`);
     }
 
-    let user = await Crud.Read<IUser>('user', 'email', email, READ_COLUMNS);
+    let user = await Crud.Read<IUser>('user', 'email', email, READ_COLUMNS, false);
 
     if (user === null) {
       await Crud.Create<IUserCreate>({ email: email, batch_id: challenge.batch_id }, 'user');
