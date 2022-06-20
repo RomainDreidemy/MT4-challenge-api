@@ -54,7 +54,7 @@ export abstract class ChallengeService {
   }
 
   private async playTest(test: IChallengeTest): Promise<IChallengeStepResponse> {
-    const {subject, points, successMessage, errorMessage, callback} = test;
+    let {subject, points, successMessage, errorMessage, callback} = test;
 
     const stepResponse: IChallengeStepResponse = {
       subject,
@@ -62,6 +62,9 @@ export abstract class ChallengeService {
       points,
       message: ''
     }
+
+    successMessage  = `Bravos, ${successMessage}`;
+    errorMessage    = `Dommage, ${errorMessage}`;
 
     try {
       await callback(this.config);
