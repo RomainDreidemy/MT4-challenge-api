@@ -68,8 +68,11 @@ update soldier s set s.rank_id = (select id from soldier_rank_type r where r.ran
 ```
 
 ## Exercice 5
+In `soldier_image` table change the domain name 'lorempixel.com' by 'challenge.com'.
 
-[//]: # (TODO:)
+```sql
+update soldier_image set secure_url = REPLACE(secure_url, 'lorempixel.com', 'challenge.com');
+```
 
 ## Exercice 6
 Create a table call `soldier_death_department`, who contains the list of death department in `soldier` table.
