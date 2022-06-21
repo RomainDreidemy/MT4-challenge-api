@@ -117,7 +117,7 @@ alter table soldier drop column life_after_department;
 
 ## Exercise 7
 Create a stored procedure, who take the department name in parameter and return the count of soldier who lived and die at the same place.  
-Return the count with the key 'nb_soldier'
+Return the count with the key `nb_soldier`
 
 ```sql
 DELIMITER //
@@ -140,6 +140,36 @@ begin
     end if;
 
     select count(*) as nb_soldier from soldier where death_department_id = @department_id and life_after_department_id = @department_id;
+    commit;
+end;
+//
+DELIMITER ;
+```
+
+## Exercice 8
+Create a stored procedure, who take two arguments, start_date and end_date of type date.  
+This stored procedure return the nb of migration executing between this two date (include start and end date) with a key `nb_migration`
+
+```sql
+DELIMITER //
+create or replace procedure migrationsList(start_date date, end_date date)
+    modifies sql data
+begin
+    declare exit handler for sqlexception
+
+        begin
+            rollback;
+            resignal;
+        end;
+
+    start transaction;
+
+    if start_date > end_date then
+        signal sqlstate '45000' set message_text = "start_date cannot be superior to end_date";
+    end if;
+
+    select count(*) as nb_migration from doctrine_migration_versions where executed_at >= start_date and executed_at <= end_date;
+
     commit;
 end;
 //
