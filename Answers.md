@@ -114,3 +114,34 @@ update soldier s set s.life_after_department_id = (select id from soldier_life_a
 alter table soldier drop column death_department;
 alter table soldier drop column life_after_department;
 ```
+
+## Exercise 7
+Create a stored procedure, who take the department name in parameter and return the count of soldier who lived and die at the same place.  
+Return the count with the key 'nb_soldier'
+
+```sql
+DELIMITER //
+create or replace procedure soldiersDieWhereTheyLived(department varchar(255))
+    modifies sql data
+begin
+    declare exit handler for sqlexception
+
+        begin
+            rollback;
+            resignal;
+        end;
+
+    start transaction;
+
+     select @department_id := id from soldier_death_department where name = department;
+
+    if @department_id is null then
+        signal sqlstate '45000' set message_text = "Department does not exist";
+    end if;
+
+    select count(*) as nb_soldier from soldier where death_department_id = @department_id and life_after_department_id = @department_id;
+    commit;
+end;
+//
+DELIMITER ;
+```
