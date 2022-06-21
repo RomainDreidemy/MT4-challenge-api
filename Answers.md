@@ -151,29 +151,32 @@ DELIMITER ;
 
 ## Exercice 8
 Create a stored procedure, who take two arguments, start_date and end_date of type date.  
-This stored procedure return the nb of migration executing between this two date (include start and end date) with a key `nb_migration`
+This stored procedure return the nb of soldier added to the database between these dates and who was injured or/and killed (include start and end date) with two keys `nb_soldier_injured, nb_soldier_killed`
 
 ```sql
 DELIMITER //
-create or replace procedure migrationsList(start_date date, end_date date)
+create or replace procedure getSolderInjuredOrKilled(start_date date, end_date date)
     modifies sql data
 begin
     declare exit handler for sqlexception
 
-        begin
-            rollback;
-            resignal;
-        end;
+begin
+rollback;
+resignal;
+end;
 
-    start transaction;
+start transaction;
 
-    if start_date > end_date then
+if start_date > end_date then
         signal sqlstate '45000' set message_text = "start_date cannot be superior to end_date";
-    end if;
+end if;
 
-    select count(*) as nb_migration from doctrine_migration_versions where executed_at >= start_date and executed_at <= end_date;
+select @solder_injured := count(*) from soldier where date_creation >= start_date and date_creation <= end_date and injured = 1;
+select @solder_killed := count(*) from soldier where date_creation >= start_date and date_creation <= end_date and killed = 1;
 
-    commit;
+select @solder_injured as nb_soldier_injured, @solder_killed as nb_soldier_injured;
+
+commit;
 end;
 //
 DELIMITER ;
