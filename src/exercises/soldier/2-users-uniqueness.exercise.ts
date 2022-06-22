@@ -1,9 +1,9 @@
 import {IMysqlThroughSSHConfig} from "../../types/classes/IMysqlThroughSSHConfig";
 import {MysqlThroughSSH} from "../../classes/MysqlThroughSSH";
-import {QueryError} from "mysql2";
+import {QueryError, RowDataPacket} from "mysql2";
 import {MysqlUniquenessError} from "../../classes/Errors/MysqlUniquenessError";
 
-const EXPECTED_USERS_COUNT_AFTER_CLEANING = 500;
+const EXPECTED_USERS_COUNT_AFTER_CLEANING = 520;
 const EXPECTED_SOLDIER_COUNT_AFTER_CLEANING = 100_000;
 
 const usersUniqueness = async (config: IMysqlThroughSSHConfig) => {
@@ -15,8 +15,13 @@ const usersUniqueness = async (config: IMysqlThroughSSHConfig) => {
 }
 
 const checkUsersCount = async (config: IMysqlThroughSSHConfig) => {
-  const users = await MysqlThroughSSH.query('select * from user', config);
-  const nb_of_user = users.length;
+
+  interface MysqlCountResponse {
+    count: number
+  }
+
+  const users = await MysqlThroughSSH.query('select count(*) as nb_user from user', config);
+  const nb_of_user: number = users[0].nb_user;
 
   if (nb_of_user > EXPECTED_USERS_COUNT_AFTER_CLEANING) {
     throw new Error('trop d\'utilisateurs sont visible dans la base de données');
@@ -28,8 +33,8 @@ const checkUsersCount = async (config: IMysqlThroughSSHConfig) => {
 }
 
 const checkSoldierCount = async (config: IMysqlThroughSSHConfig) => {
-  const soldier = await MysqlThroughSSH.query('select * from soldier', config);
-  const nb_of_soldier = soldier.length;
+  const response = await MysqlThroughSSH.query('select count(*) as nb_soldier from soldier', config);
+  const nb_of_soldier: number = response[0].nb_soldier;
 
   if (nb_of_soldier !== EXPECTED_SOLDIER_COUNT_AFTER_CLEANING) {
     throw new Error('le nombre de soldat dans la base de données, n\'est pas le nombre attendu.');
