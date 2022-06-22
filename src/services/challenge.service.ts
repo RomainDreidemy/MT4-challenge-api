@@ -4,6 +4,7 @@ import {ErrorCode} from "../classes/Errors/ErrorCode";
 import {IChallengeStepResponse, IChallengeTest} from "../types/services/Ichallenge";
 import {IMysqlThroughSSHConfig} from "../types/classes/IMysqlThroughSSHConfig";
 import {ChallengeError} from "../classes/Errors/ChallengeError";
+import {QueryError} from "mysql2";
 
 export abstract class ChallengeService {
   protected config: IMysqlThroughSSHConfig;
@@ -63,9 +64,6 @@ export abstract class ChallengeService {
       message: ''
     }
 
-    successMessage  = `Bravos, ${successMessage}`;
-    errorMessage    = `Dommage, ${errorMessage}`;
-
     try {
       await callback(this.config);
 
@@ -75,13 +73,16 @@ export abstract class ChallengeService {
 
       return stepResponse;
 
-    } catch (err) {
+    } catch (err: Error|QueryError|any) {
+      let message = errorMessage;
 
-      if (err instanceof Error) {
-        throw new ChallengeError(stepResponse, err.message);
+      if (err.code && err.sqlState && err.sqlMessage) {
+        message = `${err.code}: ${err.sqlState} - ${err.sqlMessage}`;
+      } else if (err instanceof Error) {
+        message = err.message;
       }
 
-      throw new ChallengeError(stepResponse, errorMessage);
+      throw new ChallengeError(stepResponse, message);
     }
   }
 
