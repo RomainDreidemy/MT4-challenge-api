@@ -1,6 +1,6 @@
 import {IChallengeTest} from "../types/services/Ichallenge";
 import databaseConnection from "../exercises/soldier/1-database-connexion.exercise";
-import uniqueUsers from "../exercises/soldier/2-unique-users.exercise";
+import usersUniqueness from "../exercises/soldier/2-users-uniqueness.exercise";
 
 export const SoldierChallenges: IChallengeTest[] = [
   {
@@ -15,6 +15,6 @@ export const SoldierChallenges: IChallengeTest[] = [
     points: 4,
     successMessage: 'la liste des utilisateurs est unique.',
     errorMessage: 'la liste des utilisateurs n\'est pas unique.',
-    callback: uniqueUsers
+    callback: usersUniqueness
   },
 ];

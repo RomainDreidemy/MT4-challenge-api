@@ -6,7 +6,7 @@ import {MysqlUniquenessError} from "../../classes/Errors/MysqlUniquenessError";
 const EXPECTED_USERS_COUNT_AFTER_CLEANING = 500;
 const EXPECTED_SOLDIER_COUNT_AFTER_CLEANING = 100_000;
 
-const uniqueUsers = async (config: IMysqlThroughSSHConfig) => {
+const usersUniqueness = async (config: IMysqlThroughSSHConfig) => {
   await checkUsersCount(config);
 
   await checkSoldierCount(config);
@@ -55,4 +55,4 @@ const checkEmailUniqueness = async (config: IMysqlThroughSSHConfig) => {
   }
 }
 
-export default uniqueUsers;
+export default usersUniqueness;
