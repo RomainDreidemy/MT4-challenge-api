@@ -76,6 +76,11 @@ export abstract class ChallengeService {
       return stepResponse;
 
     } catch (err) {
+
+      if (err instanceof Error) {
+        throw new ChallengeError(stepResponse, err.message);
+      }
+
       throw new ChallengeError(stepResponse, errorMessage);
     }
   }
