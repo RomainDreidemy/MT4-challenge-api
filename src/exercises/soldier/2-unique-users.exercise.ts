@@ -1,7 +1,7 @@
 import {IMysqlThroughSSHConfig} from "../../types/classes/IMysqlThroughSSHConfig";
 import {MysqlThroughSSH} from "../../classes/MysqlThroughSSH";
 import {QueryError} from "mysql2";
-import {MysqlUniqueError} from "../../classes/Errors/MysqlUniqueError";
+import {MysqlUniquenessError} from "../../classes/Errors/MysqlUniquenessError";
 
 const EXPECTED_USERS_COUNT_AFTER_CLEANING = 500;
 const EXPECTED_SOLDIER_COUNT_AFTER_CLEANING = 100_000;
@@ -37,16 +37,19 @@ const checkSoldierCount = async (config: IMysqlThroughSSHConfig) => {
 }
 
 const checkEmailUniqueness = async (config: IMysqlThroughSSHConfig) => {
+  // Send two queries to check if the email uniqueness constraint work
+  // If the two request don't throw error so the uniqueness constraint doesn't work and we throw a MysqlUniquenessError.
+  // If the uniqueness work, mysql will throw a QueryError, so we catch this error and we do nothing to tell the challenge "all is good"
   try {
     await MysqlThroughSSH.query('insert into user (id, email, password, roles) values ("XXXX-CHALLENGE-1","challenge@challenge.net", "password", "[]")', config);
     await MysqlThroughSSH.query('insert into user (id, email, password, roles) values ("XXXX-CHALLENGE-2", "challenge@challenge.net", "password", "[]")', config);
 
-    throw new MysqlUniqueError('L\'email n\'est pas défini comme unique.');
+    throw new MysqlUniquenessError('L\'email n\'est pas défini comme unique.');
 
-  } catch (err: QueryError|MysqlUniqueError|any) {
+  } catch (err: QueryError|MysqlUniquenessError|any) {
     await MysqlThroughSSH.query('delete from user where email = "challenge@challenge.net"', config);
 
-    if (err instanceof MysqlUniqueError) {
+    if (err instanceof MysqlUniquenessError) {
       throw new Error(err.message);
     }
   }
