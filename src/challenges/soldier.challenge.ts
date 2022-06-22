@@ -1,6 +1,7 @@
 import {IChallengeTest} from "../types/services/Ichallenge";
 import databaseConnection from "../exercises/soldier/1-database-connexion.exercise";
 import usersUniqueness from "../exercises/soldier/2-users-uniqueness.exercise";
+import invalidRefreshTokens from "../exercises/soldier/3-invalid-refresh-token.exercise";
 
 export const SoldierChallenges: IChallengeTest[] = [
   {
@@ -16,5 +17,12 @@ export const SoldierChallenges: IChallengeTest[] = [
     successMessage: 'la liste des utilisateurs est unique.',
     errorMessage: 'la liste des utilisateurs n\'est pas unique.',
     callback: usersUniqueness
+  },
+  {
+    subject: 'Suppression des tokens invalides.',
+    points: 2,
+    successMessage: 'les tokens restant sont les bons.',
+    errorMessage: 'les tokens restant ne sont pas les bons',
+    callback: invalidRefreshTokens
   },
 ];
