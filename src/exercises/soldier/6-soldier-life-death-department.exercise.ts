@@ -75,8 +75,8 @@ const testCountDepartments = async (table: string, relation_column_name: string,
 }
 
 const checkIfOldColumnAreDeleted = async (config: IMysqlThroughSSHConfig) => {
-  const response = await MysqlThroughSSH.query('select count(*) as nb_column from (show columns from soldier where Field = "life_after_department" or Field = "death_department")', config);
-  const nb_column = response[0].nb_column;
+  const response = await MysqlThroughSSH.query('show columns from soldier where Field = "life_after_department" or Field = "death_department"', config);
+  const nb_column = response.length;
 
   if (nb_column !== 0) {
     throw new Error('les tables \'death_department\' et \'life_after_department\' devraient être supprimé.');
