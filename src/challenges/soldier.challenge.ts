@@ -3,6 +3,7 @@ import databaseConnection from "../exercises/soldier/1-database-connexion.exerci
 import usersUniqueness from "../exercises/soldier/2-users-uniqueness.exercise";
 import invalidRefreshTokens from "../exercises/soldier/3-invalid-refresh-token.exercise";
 import handleSoldiersRank from "../exercises/soldier/4-soldier-rank.exercise";
+import soldierImageDomain from "../exercises/soldier/5-soldier-image-domain.exercise";
 
 export const SoldierChallenges: IChallengeTest[] = [
   {
@@ -32,5 +33,12 @@ export const SoldierChallenges: IChallengeTest[] = [
     successMessage: 'les rangs de soldat sont gérés correctement.',
     errorMessage: 'les rangs de soldat ne sont pas gérés correctement',
     callback: handleSoldiersRank
+  },
+  {
+    subject: 'Remplacement du nom de domain pour les images de soldat.',
+    points: 2,
+    successMessage: 'les urls des images ont bien été modifié.',
+    errorMessage: 'toutes les urls d\'image n\'ont pas été modifié.',
+    callback: soldierImageDomain
   },
 ];
