@@ -13,6 +13,8 @@ const soldierLifeDeathDepartment = async (config: IMysqlThroughSSHConfig) => {
   await checkSoldierLifeDepartmentCount(config);
 
   await checkLifeDepartmentIdsInSoldierTable(config);
+
+  await checkIfOldColumnAreDeleted(config);
 }
 
 const checkSoldierDeathDepartmentCount = async (config: IMysqlThroughSSHConfig) => {
@@ -43,7 +45,7 @@ const checkSoldierLifeDepartmentCount = async (config: IMysqlThroughSSHConfig) =
   const nb_department = response[0].nb_department;
 
   if (nb_department !== EXPECTED_LIFE_DEPARTMENT) {
-    throw new Error('le nombre de département dans la table \'soldier_life_after_department\' ne correspond pas avec ce qui est attendu.')
+    throw new Error('le nombre de département dans la table \'soldier_life_after_department\' ne correspond pas avec ce qui est attendu.');
   }
 }
 
@@ -67,8 +69,17 @@ const testCountDepartments = async (table: string, relation_column_name: string,
     const nb_department = response[0].nb_department;
 
     if (nb_department !== department.expectedCount) {
-      throw new Error('la relation entre les départements et les soldats n\'a pas été fait correctement.')
+      throw new Error('la relation entre les départements et les soldats n\'a pas été fait correctement.');
     }
+  }
+}
+
+const checkIfOldColumnAreDeleted = async (config: IMysqlThroughSSHConfig) => {
+  const response = await MysqlThroughSSH.query('select count(*) as nb_column from (show columns from soldier where Field = "life_after_department" or Field = "death_department")', config);
+  const nb_column = response[0].nb_column;
+
+  if (nb_column !== 0) {
+    throw new Error('les tables \'death_department\' et \'life_after_department\' devraient être supprimé.');
   }
 }
 
