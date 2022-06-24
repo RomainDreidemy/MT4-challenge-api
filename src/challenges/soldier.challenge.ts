@@ -4,6 +4,7 @@ import usersUniqueness from "../exercises/soldier/2-users-uniqueness.exercise";
 import invalidRefreshTokens from "../exercises/soldier/3-invalid-refresh-token.exercise";
 import handleSoldiersRank from "../exercises/soldier/4-soldier-rank.exercise";
 import soldierImageDomain from "../exercises/soldier/5-soldier-image-domain.exercise";
+import soldierLifeDeathDepartment from "../exercises/soldier/6-soldier-life-death-department.exercise";
 
 export const SoldierChallenges: IChallengeTest[] = [
   {
@@ -40,5 +41,19 @@ export const SoldierChallenges: IChallengeTest[] = [
     successMessage: 'les urls des images ont bien été modifié.',
     errorMessage: 'toutes les urls d\'image n\'ont pas été modifié.',
     callback: soldierImageDomain
+  },
+  {
+    subject: 'Remplacement du nom de domain pour les images de soldat.',
+    points: 2,
+    successMessage: 'les urls des images ont bien été modifié.',
+    errorMessage: 'toutes les urls d\'image n\'ont pas été modifié.',
+    callback: soldierImageDomain
+  },
+  {
+    subject: 'Refactoriser les colonnes death_department et life_after_department.',
+    points: 4,
+    successMessage: 'les colonnes ont été refactorisé correctement.',
+    errorMessage: 'les colonnes n\'ont pas été refactorisé correctement.',
+    callback: soldierLifeDeathDepartment
   },
 ];
