@@ -1,11 +1,14 @@
 import {IMysqlThroughSSHConfig} from "../../types/classes/IMysqlThroughSSHConfig";
 import {MysqlThroughSSH} from "../../classes/MysqlThroughSSH";
 import {ISoldierDepartmentCount} from "../../types/challenges/exercises/ISoldierDepartmentCount";
+import {ChallengeExpectedRaiseError} from "../../classes/Errors/ChallengeExpectedRaiseError";
+import {MysqlUniquenessError} from "../../classes/Errors/MysqlUniquenessError";
 
 const storedProcedureSoldiersDieWhereTheyLived = async (config: IMysqlThroughSSHConfig) => {
   await checkCountOfDepartment(config);
-}
 
+  await checkWhenADepartmentDoesNotExist(config);
+}
 
 const checkCountOfDepartment = async (config: IMysqlThroughSSHConfig) => {
   const departments: ISoldierDepartmentCount[] = [
@@ -21,7 +24,19 @@ const checkCountOfDepartment = async (config: IMysqlThroughSSHConfig) => {
     const nb_soldier = soldier.nb_soldier;
 
     if (nb_soldier !== department.expectedCount) {
-      throw new Error(`La valeur retourné n\'est pas correcte ${department.value} = ${nb_soldier}`);
+      throw new Error(`la valeur retourné n\'est pas correcte ${department.value} = ${nb_soldier}`);
+    }
+  }
+}
+
+const checkWhenADepartmentDoesNotExist = async (config: IMysqlThroughSSHConfig) => {
+  try {
+    await MysqlThroughSSH.query(`call soldiersDieWhereTheyLived('xxxxxx')`, config);
+
+    throw new ChallengeExpectedRaiseError('appeler un département qui n\'existe pas devrait lever un exception.')
+  } catch (err) {
+    if (err instanceof ChallengeExpectedRaiseError) {
+      throw new Error(err.message);
     }
   }
 }
