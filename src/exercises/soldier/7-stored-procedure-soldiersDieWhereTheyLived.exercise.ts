@@ -18,15 +18,7 @@ const checkCountOfDepartment = async (config: IMysqlThroughSSHConfig) => {
     { value: 'Rhône', expectedCount: 18 },
   ];
 
-  for (const department of departments) {
-    const response = await MysqlThroughSSH.query(`call soldiersDieWhereTheyLived('${department.value}')`, config);
-    const soldier = response[response.length - 2][0];
-    const nb_soldier = soldier.nb_soldier;
-
-    if (nb_soldier !== department.expectedCount) {
-      throw new Error(`la valeur retourné n\'est pas correcte ${department.value} = ${nb_soldier}`);
-    }
-  }
+  await testCountDepartments(departments, config);
 }
 
 const checkWhenADepartmentDoesNotExist = async (config: IMysqlThroughSSHConfig) => {
@@ -37,6 +29,19 @@ const checkWhenADepartmentDoesNotExist = async (config: IMysqlThroughSSHConfig) 
   } catch (err) {
     if (err instanceof ChallengeExpectedRaiseError) {
       throw new Error(err.message);
+    }
+  }
+}
+
+const testCountDepartments = async (departments: ISoldierDepartmentCount[], config:IMysqlThroughSSHConfig) => {
+  for (const department of departments) {
+    const query = `call soldiersDieWhereTheyLived('${department.value}')`;
+    const response = await MysqlThroughSSH.query(query, config);
+    const soldier = response[response.length - 2][0];
+    const nb_soldier = soldier.nb_soldier;
+
+    if (nb_soldier !== department.expectedCount) {
+      throw new Error(`la valeur retourné n\'est pas correcte ${department.value} = ${nb_soldier}`);
     }
   }
 }
