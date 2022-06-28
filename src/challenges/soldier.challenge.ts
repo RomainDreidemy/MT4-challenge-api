@@ -9,60 +9,60 @@ import storedProcedureSoldiersDieWhereTheyLived
   from "../exercises/soldier/7-stored-procedure-soldiersDieWhereTheyLived.exercise";
 
 export const SoldierChallenges: IChallengeTest[] = [
-  // {
-  //   subject: 'Test de la connexion à votre base de données',
-  //   points: 2,
-  //   successMessage: 'nous nous sommes connecté à votre base de données avec succès.',
-  //   errorMessage: 'nous n\'avons pas pu nous connecter à votre base de données.',
-  //   callback: databaseConnection
-  // },
-  // {
-  //   subject: 'Rendre la liste des utilisateurs unique.',
-  //   points: 4,
-  //   successMessage: 'la liste des utilisateurs est unique.',
-  //   errorMessage: 'la liste des utilisateurs n\'est pas unique.',
-  //   callback: usersUniqueness
-  // },
-  // {
-  //   subject: 'Suppression des tokens invalides.',
-  //   points: 2,
-  //   successMessage: 'les tokens restant sont les bons.',
-  //   errorMessage: 'les tokens restant ne sont pas les bons',
-  //   callback: invalidRefreshTokens
-  // },
-  // {
-  //   subject: 'Gestions des rangs de soldat.',
-  //   points: 3,
-  //   successMessage: 'les rangs de soldat sont gérés correctement.',
-  //   errorMessage: 'les rangs de soldat ne sont pas gérés correctement',
-  //   callback: handleSoldiersRank
-  // },
-  // {
-  //   subject: 'Remplacement du nom de domain pour les images de soldat.',
-  //   points: 2,
-  //   successMessage: 'les urls des images ont bien été modifié.',
-  //   errorMessage: 'toutes les urls d\'image n\'ont pas été modifié.',
-  //   callback: soldierImageDomain
-  // },
-  // {
-  //   subject: 'Remplacement du nom de domain pour les images de soldat.',
-  //   points: 2,
-  //   successMessage: 'les urls des images ont bien été modifié.',
-  //   errorMessage: 'toutes les urls d\'image n\'ont pas été modifié.',
-  //   callback: soldierImageDomain
-  // },
-  // {
-  //   subject: 'Refactoriser les colonnes death_department et life_after_department.',
-  //   points: 4,
-  //   successMessage: 'les colonnes ont été refactorisé correctement.',
-  //   errorMessage: 'les colonnes n\'ont pas été refactorisé correctement.',
-  //   callback: soldierLifeDeathDepartment
-  // },
+  {
+    subject: 'Test de la connexion à votre base de données',
+    points: 2,
+    successMessage: 'nous nous sommes connecté à votre base de données avec succès.',
+    errorMessage: 'nous n\'avons pas pu nous connecter à votre base de données.',
+    callback: databaseConnection
+  },
+  {
+    subject: 'Rendre la liste des utilisateurs unique.',
+    points: 4,
+    successMessage: 'la liste des utilisateurs est unique.',
+    errorMessage: 'la liste des utilisateurs n\'est pas unique.',
+    callback: usersUniqueness
+  },
+  {
+    subject: 'Suppression des tokens invalides.',
+    points: 2,
+    successMessage: 'les tokens restant sont les bons.',
+    errorMessage: 'les tokens restant ne sont pas les bons',
+    callback: invalidRefreshTokens
+  },
+  {
+    subject: 'Gestions des rangs de soldat.',
+    points: 3,
+    successMessage: 'les rangs de soldat sont gérés correctement.',
+    errorMessage: 'les rangs de soldat ne sont pas gérés correctement',
+    callback: handleSoldiersRank
+  },
+  {
+    subject: 'Remplacement du nom de domain pour les images de soldat.',
+    points: 2,
+    successMessage: 'les urls des images ont bien été modifié.',
+    errorMessage: 'toutes les urls d\'image n\'ont pas été modifié.',
+    callback: soldierImageDomain
+  },
+  {
+    subject: 'Remplacement du nom de domain pour les images de soldat.',
+    points: 2,
+    successMessage: 'les urls des images ont bien été modifié.',
+    errorMessage: 'toutes les urls d\'image n\'ont pas été modifié.',
+    callback: soldierImageDomain
+  },
+  {
+    subject: 'Refactoriser les colonnes death_department et life_after_department.',
+    points: 4,
+    successMessage: 'les colonnes ont été refactorisé correctement.',
+    errorMessage: 'les colonnes n\'ont pas été refactorisé correctement.',
+    callback: soldierLifeDeathDepartment
+  },
   {
     subject: 'Créer une procédure stockée .',
     points: 3,
     successMessage: 'La procédure stockée fonctionne.',
-    errorMessage: 'les colonnes n\'ont pas été refactorisé correctement.',
+    errorMessage: 'La procédure stockée ne fonctionne pas.',
     callback: storedProcedureSoldiersDieWhereTheyLived
   },
 ];
