@@ -14,20 +14,20 @@ Be careful, in the `soldier` table you need to update the reference.
 
 ```sql
 update soldier set soldier.created_by_id =
-    (select id from User where email = (select email from User u where u.id = soldier.created_by_id) group by email having count(email) > 1)
+    (select id from user where email = (select email from user u where u.id = soldier.created_by_id) group by email having count(email) > 1)
     where created_by_id in (
     select u.id
-    from User u
+    from user u
     inner join (
-        select email, id from User group by email having count(email) > 1
+        select email, id from user group by email having count(email) > 1
     ) tmp on tmp.email = u.email where tmp.id < u.id
 );
 
-delete from User where id in (
+delete from user where id in (
     select u.id
-    from User u
+    from user u
     inner join (
-        select email, id from User group by email having count(email) > 1
+        select email, id from user group by email having count(email) > 1
     ) tmp on tmp.email = u.email where tmp.id < u.id
 );
 
