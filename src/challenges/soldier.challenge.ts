@@ -5,6 +5,8 @@ import invalidRefreshTokens from "../exercises/soldier/3-invalid-refresh-token.e
 import handleSoldiersRank from "../exercises/soldier/4-soldier-rank.exercise";
 import soldierImageDomain from "../exercises/soldier/5-soldier-image-domain.exercise";
 import soldierLifeDeathDepartment from "../exercises/soldier/6-soldier-life-death-department.exercise";
+import storedProcedureSoldiersDieWhereTheyLived
+  from "../exercises/soldier/7-stored-procedure-soldiersDieWhereTheyLived.exercise";
 
 export const SoldierChallenges: IChallengeTest[] = [
   // {
@@ -56,13 +58,13 @@ export const SoldierChallenges: IChallengeTest[] = [
   //   errorMessage: 'les colonnes n\'ont pas été refactorisé correctement.',
   //   callback: soldierLifeDeathDepartment
   // },
-  {
-    subject: 'Créer une procédure stockée .',
-    points: 3,
-    successMessage: 'La procédure stockée fonctionne.',
-    errorMessage: 'La procédure stockée ne fonctionne pas.',
-    callback: storedProcedureSoldiersDieWhereTheyLived
-  },
+  // {
+  //   subject: 'Créer une procédure stockée .',
+  //   points: 3,
+  //   successMessage: 'La procédure stockée fonctionne.',
+  //   errorMessage: 'La procédure stockée ne fonctionne pas.',
+  //   callback: storedProcedureSoldiersDieWhereTheyLived
+  // },
   {
     subject: 'Créer une procédure stockée getSolderInjuredOrKilled(start_date, end_date).',
     points: 5,
