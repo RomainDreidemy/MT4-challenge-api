@@ -1,7 +1,10 @@
 import {IMysqlThroughSSHConfig} from "../../types/classes/IMysqlThroughSSHConfig";
 import {MysqlThroughSSH} from "../../classes/MysqlThroughSSH";
+import {ChallengeExpectedRaiseError} from "../../classes/Errors/ChallengeExpectedRaiseError";
 
 const storedProcedureGetSoldierInjuredOrKilled = async (config: IMysqlThroughSSHConfig) => {
+  await checkIfBadDateRaiseError(config);
+
   await checkSoldierInjuredOrKilledCount(config);
 }
 
@@ -21,15 +24,15 @@ const checkSoldierInjuredOrKilledCount = async (config: IMysqlThroughSSHConfig) 
 }
 
 const checkIfBadDateRaiseError = async (config: IMysqlThroughSSHConfig) => {
-  // try {
-  //   await MysqlThroughSSH.query(`call soldiersDieWhereTheyLived('xxxxxx')`, config);
-  //
-  //   throw new ChallengeExpectedRaiseError('appeler un département qui n\'existe pas devrait lever un exception.')
-  // } catch (err) {
-  //   if (err instanceof ChallengeExpectedRaiseError) {
-  //     throw new Error(err.message);
-  //   }
-  // }
+  try {
+    await MysqlThroughSSH.query(`call getSolderInjuredOrKilled(DATE('2022-07-11'), DATE('2022-06-10'))`, config);
+
+    throw new ChallengeExpectedRaiseError('mettre une date de début supérieur à la date de fin devrait lever une exception.');
+  } catch (err) {
+    if (err instanceof ChallengeExpectedRaiseError) {
+      throw new Error(err.message);
+    }
+  }
 }
 
 export default storedProcedureGetSoldierInjuredOrKilled;
