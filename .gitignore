@@ -2,6 +2,6 @@
 /build/
 /.idea/
 
-/database/.env.dev
-/database/.env.stage
 /database/dbms-data
+
+.env
