@@ -6,7 +6,7 @@
 
 #### Environment variables
 ```bash
-cp ./database/.env.example ./database/.env.dev
+cp .env.example .env
 ```
 
 #### Start the containers

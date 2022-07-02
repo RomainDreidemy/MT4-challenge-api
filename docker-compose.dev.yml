@@ -8,6 +8,8 @@ services:
     command: /bin/bash -c "while sleep 1000; do :; done"
     container_name: api_challenge
     working_dir: /server
+    env_file:
+      - .env
     ports:
       - 5050:5050
     networks:
@@ -23,7 +25,7 @@ services:
     ports:
       - "3309:3306"
     env_file:
-      - ./database/.env.dev
+      - .env
     command: [
       "--character-set-server=utf8mb4",
       "--collation-server=utf8mb4_unicode_ci",
