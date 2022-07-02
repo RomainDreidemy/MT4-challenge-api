@@ -12,7 +12,7 @@ export class MysqlThroughSSH {
           sshClient.forwardOut(
             '127.0.0.1',
             config.database_port,
-            config.ssh_host,
+            config.database_host,
             config.database_port,
             (err, stream) => {
               if (err) {
@@ -35,7 +35,7 @@ export class MysqlThroughSSH {
   private static getMysqlConnectionOptions(config: IMysqlThroughSSHConfig, stream: ClientChannel): ConnectionOptions {
     return {
       ...{
-        host: config.ssh_host,
+        host: config.database_host,
         port: config.database_port,
         user: config.database_username,
         password: config.database_password,
@@ -50,7 +50,8 @@ export class MysqlThroughSSH {
       host: config.ssh_host,
       port: config.ssh_port,
       username: config.ssh_username,
-      privateKey: config.ssh_privateKey
+      privateKey: config.ssh_privateKey,
+      readyTimeout: 30000
     }
   }
 
