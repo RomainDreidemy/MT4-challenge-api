@@ -7,6 +7,8 @@ import soldierImageDomain from "../exercises/soldier/5-soldier-image-domain.exer
 import soldierLifeDeathDepartment from "../exercises/soldier/6-soldier-life-death-department.exercise";
 import storedProcedureSoldiersDieWhereTheyLived
   from "../exercises/soldier/7-stored-procedure-soldiersDieWhereTheyLived.exercise";
+import storedProcedureGetSoldierInjuredOrKilled
+  from "../exercises/soldier/8-stored-procedure-getSolderInjuredOrKilled.exercise";
 
 export const SoldierChallenges: IChallengeTest[] = [
   {
@@ -59,10 +61,17 @@ export const SoldierChallenges: IChallengeTest[] = [
     callback: soldierLifeDeathDepartment
   },
   {
-    subject: 'Créer une procédure stockée .',
+    subject: 'Créer une procédure stockée soldiersDieWhereTheyLived(department).',
     points: 3,
     successMessage: 'La procédure stockée fonctionne.',
     errorMessage: 'La procédure stockée ne fonctionne pas.',
     callback: storedProcedureSoldiersDieWhereTheyLived
+  },
+  {
+    subject: 'Créer une procédure stockée getSolderInjuredOrKilled(start_date, end_date).',
+    points: 5,
+    successMessage: 'La procédure stockée fonctionne.',
+    errorMessage: 'la procédure stocké ne fonctionne pas.',
+    callback: storedProcedureGetSoldierInjuredOrKilled
   },
 ];
