@@ -14,7 +14,7 @@ services:
       "--collation-server=utf8mb4_unicode_ci",
     ]
     volumes:
-      - ./stage/dbms/dbms-data:/var/lib/mysql
+      - database-challenge:/var/lib/mysql
       - ./database/mariadb.cnf:/etc/mysql/mariadb.cnf
       - ./database/ddl/ddl.sql:/docker-entrypoint-initdb.d/999-ddl.sql
     networks:
@@ -54,6 +54,9 @@ services:
       options:
         max-file: "5"
         max-size: "500m"
+
+volumes:
+  database-challenge:
 
 networks:
   api-stage-network:
