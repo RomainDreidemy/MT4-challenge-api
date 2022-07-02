@@ -5,8 +5,9 @@ export interface IChallengeStepResponse {
   message: string;
 }
 
-export interface IChallengeTest {
+export interface IChallengeExercise {
   subject: string;
+  description: string;
   points: number;
   successMessage: string;
   errorMessage: string;

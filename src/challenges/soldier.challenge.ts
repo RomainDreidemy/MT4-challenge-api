@@ -1,4 +1,4 @@
-import {IChallengeTest} from "../types/services/Ichallenge";
+import {IChallengeExercise} from "../types/services/Ichallenge";
 import databaseConnection from "../exercises/soldier/1-database-connexion.exercise";
 import usersUniqueness from "../exercises/soldier/2-users-uniqueness.exercise";
 import invalidRefreshTokens from "../exercises/soldier/3-invalid-refresh-token.exercise";
@@ -10,9 +10,10 @@ import storedProcedureSoldiersDieWhereTheyLived
 import storedProcedureGetSoldierInjuredOrKilled
   from "../exercises/soldier/8-stored-procedure-getSolderInjuredOrKilled.exercise";
 
-export const SoldierChallenges: IChallengeTest[] = [
+export const SoldierChallenges: IChallengeExercise[] = [
   {
     subject: 'Test de la connexion à votre base de données',
+    description: '',
     points: 2,
     successMessage: 'nous nous sommes connecté à votre base de données avec succès.',
     errorMessage: 'nous n\'avons pas pu nous connecter à votre base de données.',
@@ -20,6 +21,7 @@ export const SoldierChallenges: IChallengeTest[] = [
   },
   {
     subject: 'Rendre la liste des utilisateurs unique.',
+    description: '',
     points: 4,
     successMessage: 'la liste des utilisateurs est unique.',
     errorMessage: 'la liste des utilisateurs n\'est pas unique.',
@@ -27,6 +29,7 @@ export const SoldierChallenges: IChallengeTest[] = [
   },
   {
     subject: 'Suppression des tokens invalides.',
+    description: '',
     points: 2,
     successMessage: 'les tokens restant sont les bons.',
     errorMessage: 'les tokens restant ne sont pas les bons',
@@ -34,6 +37,7 @@ export const SoldierChallenges: IChallengeTest[] = [
   },
   {
     subject: 'Gestions des rangs de soldat.',
+    description: '',
     points: 3,
     successMessage: 'les rangs de soldat sont gérés correctement.',
     errorMessage: 'les rangs de soldat ne sont pas gérés correctement',
@@ -41,6 +45,7 @@ export const SoldierChallenges: IChallengeTest[] = [
   },
   {
     subject: 'Remplacement du nom de domain pour les images de soldat.',
+    description: '',
     points: 2,
     successMessage: 'les urls des images ont bien été modifié.',
     errorMessage: 'toutes les urls d\'image n\'ont pas été modifié.',
@@ -48,6 +53,7 @@ export const SoldierChallenges: IChallengeTest[] = [
   },
   {
     subject: 'Remplacement du nom de domain pour les images de soldat.',
+    description: '',
     points: 2,
     successMessage: 'les urls des images ont bien été modifié.',
     errorMessage: 'toutes les urls d\'image n\'ont pas été modifié.',
@@ -55,6 +61,7 @@ export const SoldierChallenges: IChallengeTest[] = [
   },
   {
     subject: 'Refactoriser les colonnes death_department et life_after_department.',
+    description: '',
     points: 4,
     successMessage: 'les colonnes ont été refactorisé correctement.',
     errorMessage: 'les colonnes n\'ont pas été refactorisé correctement.',
@@ -62,6 +69,7 @@ export const SoldierChallenges: IChallengeTest[] = [
   },
   {
     subject: 'Créer une procédure stockée soldiersDieWhereTheyLived(department).',
+    description: '',
     points: 3,
     successMessage: 'La procédure stockée fonctionne.',
     errorMessage: 'La procédure stockée ne fonctionne pas.',
@@ -69,6 +77,7 @@ export const SoldierChallenges: IChallengeTest[] = [
   },
   {
     subject: 'Créer une procédure stockée getSolderInjuredOrKilled(start_date, end_date).',
+    description: '',
     points: 5,
     successMessage: 'La procédure stockée fonctionne.',
     errorMessage: 'la procédure stocké ne fonctionne pas.',
