@@ -40,13 +40,6 @@ export async function expressAuthentication(
         }
       });
     });
-
-    // try {
-    //   const token = request.headers.authorization.split(' ')[1];
-    //   jwt.verify(token, process.env.APP_SECRET || 'dev-secret');
-    // } catch (err) {
-    //   throw new ApiError(ErrorCode.Unauthorized, 'auth/invalid-jwt', 'Invalid token', err);
-    // }
   }
 
   return true;
