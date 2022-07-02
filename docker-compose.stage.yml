@@ -30,21 +30,11 @@ services:
     container_name: stage_database_api
     ports:
       - "80:5050"
-    environment:
-      - NODE_ENV=prod
-      - PORT=5050
-      - DB_HOST=stage-dbms
-      - DB_USER=api-stage
-      - DB_PASSWORD=api-stage-password
-      - DB_DATABASE=mtdb_stage
-      - AWS_ACCESS_KEY_ID=SCWTY6B680E3QQ9WM2V5
-      - AWS_SECRET_ACCESS_KEY=18856bfe-8260-4cfd-8802-389f943deccf
-      - STORAGE_REGION=fr-par
-      - STORAGE_ENDPOINT=https://s3.fr-par.scw.cloud
-      - STORAGE_BUCKET=object-storage-playground
     networks:
       - api-stage-network
     restart: always
+    env_file:
+      - .env
     depends_on:
       - stage-dbms
     labels:
