@@ -69,11 +69,24 @@ export class Crud {
     }
   }
 
-  public static async Update<T>(body: T, table: DbTable, idName: string, idValue: number, validator?: ValidateFunction<T>): Promise<IUpdateResponse> {
+  public static async Update<T>(body: T, table: DbTable, idNames: string[], idValues: number[], validator?: ValidateFunction<T>): Promise<IUpdateResponse> {
     if (!validator || validator(body)) {
       const db = DB.Connection;
 
-      const data = await db.query<OkPacket>(`update ${table} set ? where ${idName} = ?`, [body, idValue]);
+      let where = '';
+
+      let index = 0;
+      while (index < idNames.length) {
+        if (index > 0) {
+          where = where + ' and ' + idNames[index] + '=' + idValues[index];
+        } else {
+          where = idNames[index] + '=' + idValues[index];
+        }
+
+        index += 1;
+      }
+
+      const data = await db.query<OkPacket>(`update ${table} set ? where ${where}`, [body]);
 
       return {
         rows: data[0].affectedRows
@@ -83,15 +96,33 @@ export class Crud {
     }
   }
 
-  public static async Read<T>(table: DbTable, idName: string, idValue: number|string, columns: string[], errorIfNotFound: boolean = true): Promise<T|null> {
+  public static async Read<T>(table: DbTable, idNames: string[], idValues: number[]|string[], columns: string[], errorIfNotFound: boolean = true): Promise<T|null> {
     const db = DB.Connection;
-    const data = await db.query<T[] & RowDataPacket[]>(`select ${columns.join(',')} from ${table} where ${idName} = ?`, [idValue]);
+
+    let where = '';
+
+    if (idNames.length !== idValues.length) {
+      throw new Error('Should have the same count for idNames and idValues');
+    }
+
+    let index = 0;
+    while (index < idNames.length) {
+      if (index > 0) {
+        where = where + ' and ' + idNames[index] + '=' + idValues[index];
+      } else {
+        where = idNames[index] + '=' + idValues[index];
+      }
+
+      index += 1;
+    }
+
+    const data = await db.query<T[] & RowDataPacket[]>(`select ${columns.join(',')} from ${table} where ${where}`);
 
     if (data[0].length > 0) {
       return data[0][0];
     } else {
       if (errorIfNotFound) {
-        throw new ApiError(ErrorCode.BadRequest, 'sql/not-found', `Could not read row with ${idName} = ${idValue}`);
+        throw new ApiError(ErrorCode.BadRequest, 'sql/not-found', `Could not read row with `);
       }
 
       return null;

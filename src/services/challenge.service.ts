@@ -5,6 +5,10 @@ import {IChallengeStepResponse, IChallengeTest} from "../types/services/Ichallen
 import {IMysqlThroughSSHConfig} from "../types/classes/IMysqlThroughSSHConfig";
 import {ChallengeError} from "../classes/Errors/ChallengeError";
 import {QueryError} from "mysql2";
+import {IUserRequest} from "../types/api/authentication/IUserRequest";
+import {Crud} from "../classes/Crud";
+import {IUser, IUserCreate} from "../types/tables/user/IUser";
+import {IScoreCreate, IScoreUpdate} from "../types/tables/score/IScore";
 
 export abstract class ChallengeService {
   protected config: IMysqlThroughSSHConfig;
@@ -37,20 +41,21 @@ export abstract class ChallengeService {
     return this.points === this.pointsToWin;
   }
 
-  public async start(): Promise<void> {
+  public async start(user: IUserRequest): Promise<void> {
     try {
       let index = 0;
       while (index < this.tests.length) {
         this.responses.push( await this.playTest(this.tests[index]));
         index += 1;
       }
-
     } catch (err) {
       if (err instanceof ChallengeError) {
         this.responses.push(err.getApiStepResponse());
       } else {
         throw new ApiError(ErrorCode.InternalError, 'internal/unknown', 'Internal server error', err);
       }
+    } finally {
+      await this.handleScore(user.id, user.challenge_id, this.points);
     }
   }
 
@@ -88,5 +93,38 @@ export abstract class ChallengeService {
 
   protected addPoints(points: number): void {
     this.points += points;
+  }
+
+  private handleScore = async (userId: number, challengeId: number, score: number) => {
+    const hasScore = await this.hasUserScore(userId, challengeId);
+
+     if (!hasScore) {
+       await this.saveScore(userId, challengeId, score);
+     } else {
+       await this.updateScore(userId, challengeId, score);
+     }
+  }
+
+  private hasUserScore = async (userId: number, challengeId: number): Promise<boolean> => {
+    const request = await Crud.Read<IUser>('score', ['user_id', 'challenge_id'], [userId, challengeId], ['score'], false);
+
+    return !!request;
+  }
+
+  private saveScore = async (userId: number, challengeId: number, score: number) => {
+    await Crud.Create<IScoreCreate>({
+      user_id: userId,
+      challenge_id: challengeId,
+      score,
+      first_try_at: new Date(),
+      last_try_at: new Date()
+    }, 'score');
+  }
+
+  private updateScore = async (userId: number, challengeId: number, score: number) => {
+    await Crud.Update<IScoreUpdate>({
+      score,
+      last_try_at: new Date()
+    }, 'score', ['user_id', 'challenge_id'], [userId, challengeId]);
   }
 }
