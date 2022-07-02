@@ -18,12 +18,35 @@ export async function expressAuthentication(
       throw new ApiError(ErrorCode.Unauthorized, 'auth/bad-header', 'Authorization should be a bearer token');
     }
 
-    try {
-      const token = request.headers.authorization.split(' ')[1];
-      jwt.verify(token, process.env.APP_SECRET || 'dev-secret');
-    } catch (err) {
-      throw new ApiError(ErrorCode.Unauthorized, 'auth/invalid-jwt', 'Invalid token', err);
-    }
+    const token = request.headers.authorization.split(' ')[1];
+
+    return new Promise((resolve, reject) => {
+      if (!token) {
+        reject(new Error("No token provided"));
+      }
+      jwt.verify(token, process.env.APP_SECRET || 'dev-secret', function (err: any, decoded: any) {
+        if (err) {
+          reject(err);
+        } else {
+          // Check if JWT contains all required scopes
+          if (scopes) {
+            for (let scope of scopes) {
+              if (!decoded.scopes.includes(scope)) {
+                reject(new Error("JWT does not contain required scope."));
+              }
+            }
+          }
+          resolve(decoded);
+        }
+      });
+    });
+
+    // try {
+    //   const token = request.headers.authorization.split(' ')[1];
+    //   jwt.verify(token, process.env.APP_SECRET || 'dev-secret');
+    // } catch (err) {
+    //   throw new ApiError(ErrorCode.Unauthorized, 'auth/invalid-jwt', 'Invalid token', err);
+    // }
   }
 
   return true;
