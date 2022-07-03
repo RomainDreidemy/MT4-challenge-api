@@ -6,7 +6,7 @@ import {IUser, IUserCreate} from "../types/tables/user/IUser";
 import {JWT} from "../classes/JWT";
 import {Mailer} from "../classes/Mailer";
 
-const READ_COLUMNS = ['id', 'email', 'batch_id'];
+const READ_COLUMNS = ['id', 'email', 'batch_id', 'is_admin'];
 const FRONT_URL = process.env.FRONT_URL || 'http://127.0.0.1:3000'
 
 export class UserServices {
