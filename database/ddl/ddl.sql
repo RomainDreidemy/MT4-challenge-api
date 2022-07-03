@@ -1,7 +1,8 @@
 create table if not exists `user` (
   `id` int primary key auto_increment,
   `email` varchar(255) unique,
-  `batch_id` int NOT NULL
+  `batch_id` int NOT NULL,
+  `is_admin` int not null default 0
 );
 
 create table if not exists `batch` (

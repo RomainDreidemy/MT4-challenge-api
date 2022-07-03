@@ -28,10 +28,11 @@ export async function expressAuthentication(
         if (err) {
           reject(err);
         } else {
+          const { data } = decoded;
           // Check if JWT contains all required scopes
           if (scopes) {
             for (let scope of scopes) {
-              if (!decoded.scopes.includes(scope)) {
+              if (!data.scopes.includes(scope)) {
                 reject(new Error("JWT does not contain required scope."));
               }
             }
