@@ -1,5 +1,6 @@
 export interface IChallengeStepResponse {
   subject: string;
+  description: string;
   status: boolean;
   points: number;
   message: string;

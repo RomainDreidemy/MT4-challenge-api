@@ -60,10 +60,11 @@ export abstract class ChallengeService {
   }
 
   private async playTest(test: IChallengeExercise): Promise<IChallengeStepResponse> {
-    let {subject, points, successMessage, errorMessage, callback} = test;
+    let {subject, description, points, successMessage, errorMessage, callback} = test;
 
     const stepResponse: IChallengeStepResponse = {
       subject,
+      description,
       status: false,
       points,
       message: ''
