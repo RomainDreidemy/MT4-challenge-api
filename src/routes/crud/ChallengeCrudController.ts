@@ -50,7 +50,7 @@ export class ChallengeCrudController {
   }
 
   /**
-   * Création d'un challenge.
+   * Mise à jour d'un challenge.
    */
   @Put("/{id}")
   public async update(@Path() id: number, @Body() body: IChallengeUpdate): Promise<IUpdateResponse> {
