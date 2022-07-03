@@ -8,8 +8,8 @@ export interface IScore {
   user_id: number;
   challenge_id: number;
   score: number;
-  first_try_at: datetime;
-  last_try_at: datetime;
+  first_try_at: Date;
+  last_try_at: Date;
 }
 
 export type IScoreCreate = Omit<IScore, 'id'>;
