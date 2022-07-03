@@ -1,4 +1,4 @@
-import {Body, Get, Path, Post, Put, Route, Security} from 'tsoa';
+import {Body, Get, Path, Post, Put, Route, Security, Tags} from 'tsoa';
 import {Crud} from "../../classes/Crud";
 import {IChallenge, IChallengeCreate, IChallengeUpdate} from "../../types/tables/challenge/IChallenge";
 import {ApiError} from "../../classes/Errors/ApiError";
@@ -13,6 +13,7 @@ const TABLE_NAME    = 'challenge'
  * Les challenges de la plateforme.
  */
 @Route("/challenges")
+@Tags("Challenges")
 @Security('jwt', ['admin'])
 export class ChallengeCrudController {
 
