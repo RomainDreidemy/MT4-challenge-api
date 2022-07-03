@@ -20,13 +20,19 @@ export class UserServices {
     let user = await Crud.Read<IUser>('user', ['email'], [email], READ_COLUMNS, false);
 
     if (user === null) {
-      await Crud.Create<IUserCreate>({ email: email, batch_id: challenge.batch_id }, 'user');
+      const response = await Crud.Create<IUserCreate>({ email: email, batch_id: challenge.batch_id, is_admin: 0 }, 'user');
+      user = await Crud.Read<IUser>('user', ['id'], [response.id], READ_COLUMNS);
+    }
+
+    if (!user) {
+      throw new Error('User cannot be created');
     }
 
     const jwtData = {
-        id: user?.id,
+        id: user.id,
         email: email,
-        challenge_id: challenge_id
+        challenge_id: challenge_id,
+        scopes: user.is_admin ? ['admin'] : [],
     }
 
     const token = JWT.get(jwtData);
