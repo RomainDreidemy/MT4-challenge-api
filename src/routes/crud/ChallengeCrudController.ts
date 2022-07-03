@@ -1,8 +1,10 @@
-import {Get, Path, Route, Security} from 'tsoa';
+import {Body, Get, Path, Post, Put, Route, Security} from 'tsoa';
 import {Crud} from "../../classes/Crud";
-import {IChallenge} from "../../types/tables/challenge/IChallenge";
+import {IChallenge, IChallengeCreate, IChallengeUpdate} from "../../types/tables/challenge/IChallenge";
 import {ApiError} from "../../classes/Errors/ApiError";
 import {ErrorCode} from "../../classes/Errors/ErrorCode";
+import {ICreateResponse} from "../../types/api/ICreateResponse";
+import {IUpdateResponse} from "../../types/api/IUpdateResponse";
 
 const READ_COLUMNS  = ['id', 'name', 'batch_id'];
 const TABLE_NAME    = 'challenge'
@@ -36,5 +38,21 @@ export class ChallengeCrudController {
     }
 
     return response;
+  }
+
+  /**
+   * Création d'un challenge.
+   */
+  @Post("/")
+  public async create(@Body() body: IChallengeCreate): Promise<ICreateResponse> {
+    return await Crud.Create<IChallengeCreate>(body, TABLE_NAME);
+  }
+
+  /**
+   * Création d'un challenge.
+   */
+  @Put("/{id}")
+  public async update(@Path() id: number, @Body() body: IChallengeUpdate): Promise<IUpdateResponse> {
+    return await Crud.Update<IChallengeUpdate>(body, TABLE_NAME, ['id'], [id]);
   }
 }
