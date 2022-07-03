@@ -23,7 +23,7 @@ create table if not exists `challenge` (
 
 create table if not exists `score` (
   `id` int primary key auto_increment,
-  `user_id` int unique,
+  `user_id` int,
   `challenge_id` int not null,
   `score` int not null,
   `first_try_at` datetime not null,
