@@ -107,6 +107,9 @@ export class Crud {
 
     let index = 0;
     while (index < idNames.length) {
+      if (typeof idValues[index] === 'string') {
+        idValues[index] = `'${idValues[index]}'`;
+      }
       if (index > 0) {
         where = where + ' and ' + idNames[index] + '=' + idValues[index];
       } else {

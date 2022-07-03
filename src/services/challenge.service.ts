@@ -1,7 +1,7 @@
 import {IChallengeResponse} from "../types/api/challenge/IChallengeResponse";
 import {ApiError} from "../classes/Errors/ApiError";
 import {ErrorCode} from "../classes/Errors/ErrorCode";
-import {IChallengeStepResponse, IChallengeTest} from "../types/services/Ichallenge";
+import {IChallengeStepResponse, IChallengeExercise} from "../types/services/Ichallenge";
 import {IMysqlThroughSSHConfig} from "../types/classes/IMysqlThroughSSHConfig";
 import {ChallengeError} from "../classes/Errors/ChallengeError";
 import {QueryError} from "mysql2";
@@ -13,10 +13,10 @@ import {IScoreCreate, IScoreUpdate} from "../types/tables/score/IScore";
 export abstract class ChallengeService {
   protected config: IMysqlThroughSSHConfig;
   protected responses: IChallengeStepResponse[];
-  protected tests: IChallengeTest[];
+  protected tests: IChallengeExercise[];
   protected points: number = 0;
 
-  protected constructor(config: IMysqlThroughSSHConfig, tests: IChallengeTest[]) {
+  protected constructor(config: IMysqlThroughSSHConfig, tests: IChallengeExercise[]) {
     this.config       = config;
     this.responses    = [];
     this.tests        = tests;
@@ -59,11 +59,12 @@ export abstract class ChallengeService {
     }
   }
 
-  private async playTest(test: IChallengeTest): Promise<IChallengeStepResponse> {
-    let {subject, points, successMessage, errorMessage, callback} = test;
+  private async playTest(test: IChallengeExercise): Promise<IChallengeStepResponse> {
+    let {subject, description, points, successMessage, errorMessage, callback} = test;
 
     const stepResponse: IChallengeStepResponse = {
       subject,
+      description,
       status: false,
       points,
       message: ''
