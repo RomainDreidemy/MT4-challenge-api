@@ -1,4 +1,4 @@
-import {Body, Get, Path, Post, Put, Route, Security, Tags} from 'tsoa';
+import {Body, Delete, Get, Path, Post, Put, Route, Security, Tags} from 'tsoa';
 import {Crud} from "../../classes/Crud";
 import {IChallenge, IChallengeCreate, IChallengeUpdate} from "../../types/tables/challenge/IChallenge";
 import {ApiError} from "../../classes/Errors/ApiError";
@@ -55,5 +55,13 @@ export class ChallengeCrudController {
   @Put("/{id}")
   public async update(@Path() id: number, @Body() body: IChallengeUpdate): Promise<IUpdateResponse> {
     return await Crud.Update<IChallengeUpdate>(body, TABLE_NAME, ['id'], [id]);
+  }
+
+  /**
+   * Suppression d'un challenge.
+   */
+  @Delete('/{id}')
+  public async delete(@Path() id: number): Promise<IUpdateResponse> {
+    return Crud.Delete(TABLE_NAME, 'id', id);
   }
 }

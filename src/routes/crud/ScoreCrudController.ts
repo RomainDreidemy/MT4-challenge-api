@@ -1,4 +1,4 @@
-import {Body, Get, Path, Post, Put, Route, Security, Tags} from 'tsoa';
+import {Body, Delete, Get, Path, Post, Put, Route, Security, Tags} from 'tsoa';
 import {Crud} from "../../classes/Crud";
 import {IScore, IScoreCreate, IScoreUpdate} from "../../types/tables/score/IScore";
 import {ApiError} from "../../classes/Errors/ApiError";
@@ -55,5 +55,13 @@ export class ScoreCrudController {
   @Put("/{id}")
   public async update(@Path() id: number, @Body() body: IScoreUpdate): Promise<IUpdateResponse> {
     return await Crud.Update<IScoreUpdate>(body, TABLE_NAME, ['id'], [id]);
+  }
+
+  /**
+   * Suppression d'un score.
+   */
+  @Delete('/{id}')
+  public async delete(@Path() id: number): Promise<IUpdateResponse> {
+    return Crud.Delete(TABLE_NAME, 'id', id);
   }
 }

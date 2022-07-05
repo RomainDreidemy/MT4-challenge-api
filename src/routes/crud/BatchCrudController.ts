@@ -1,4 +1,4 @@
-import {Body, Get, Path, Post, Put, Route, Security, Tags} from 'tsoa';
+import {Body, Delete, Get, Path, Post, Put, Route, Security, Tags} from 'tsoa';
 import {Crud} from "../../classes/Crud";
 import {ApiError} from "../../classes/Errors/ApiError";
 import {ErrorCode} from "../../classes/Errors/ErrorCode";
@@ -55,5 +55,13 @@ export class BatchCrudController {
   @Put("/{id}")
   public async update(@Path() id: number, @Body() body: IBatchUpdate): Promise<IUpdateResponse> {
     return await Crud.Update<IBatchUpdate>(body, TABLE_NAME, ['id'], [id]);
+  }
+
+  /**
+   * Suppression d'une promo.
+   */
+  @Delete('/{id}')
+  public async delete(@Path() id: number): Promise<IUpdateResponse> {
+    return Crud.Delete(TABLE_NAME, 'id', id);
   }
 }
