@@ -5,6 +5,7 @@ import {ApiError} from "../../classes/Errors/ApiError";
 import {ErrorCode} from "../../classes/Errors/ErrorCode";
 import {ICreateResponse} from "../../types/api/ICreateResponse";
 import {IUpdateResponse} from "../../types/api/IUpdateResponse";
+import {IScore} from "../../types/tables/score/IScore";
 
 const READ_COLUMNS  = ['id', 'name', 'batch_id'];
 const TABLE_NAME    = 'challenge'
@@ -71,5 +72,19 @@ export class ChallengeCrudController {
   @Post("/{id}/close")
   public async close(@Path() id: number): Promise<IUpdateResponse> {
     return await Crud.Update<IChallengeUpdate>({ is_close: 1 }, TABLE_NAME, ['id'], [id]);
+  }
+
+  /**
+   * Récupère les scores pour un challenge.
+   */
+  @Get("/{id}/scores")
+  public async scores(@Path() id: number): Promise<IChallenge[]> {
+    const response = await Crud.Index<IChallenge>({}, 'score', ['id', 'user_id', 'challenge_id', 'score', 'first_try_at', 'last_try_at'], {challenge_id: id});
+
+    if (response === null) {
+      throw new ApiError(ErrorCode.BadRequest, 'sql/not-found', `Could not found a challenge`);
+    }
+
+    return response.rows;
   }
 }
