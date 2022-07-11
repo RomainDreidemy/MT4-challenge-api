@@ -10,7 +10,7 @@ const READ_COLUMNS = ['id', 'email', 'batch_id', 'is_admin'];
 const FRONT_URL = process.env.FRONT_URL || 'http://127.0.0.1:3000'
 
 export class UserServices {
-  public static async authenticate(email: string, admin: boolean, challenge_id: number | undefined) {
+  public static async authenticate(email: string, admin: boolean = false, challenge_id: number | undefined) {
     let user = await UserServices.dispatcherUser(email, admin, challenge_id);
 
     if (!user) {
@@ -47,42 +47,55 @@ export class UserServices {
 
 
   private static async dispatcherUser(email: string, admin: boolean, challenge_id: number | undefined): Promise<IUser | null> {
-
     if (admin) {
-      return await Crud.Read<IUser>('user', ['email'], [email], READ_COLUMNS, false)
+      return UserServices.getAdminUser(email)
 
     } else if (!admin && challenge_id) {
-      const challenge: IChallenge | null = await UserServices.getChallenge(challenge_id)
-
-      let user = await Crud.Read<IUser>('user', ['email'], [email], READ_COLUMNS, false);
-
-      if (user === null && !!challenge) {
-        const response = await Crud.Create<IUserCreate>({
-          email: email,
-          batch_id: challenge.batch_id,
-          is_admin: 0
-        }, 'user');
-        user = await Crud.Read<IUser>('user', ['id'], [response.id], READ_COLUMNS);
-      }
-
-      if (!user) {
-        throw new Error('User cannot be created');
-      } else if (!admin && !challenge) {
-        throw new Error('Challenge cannot be found');
-      }
-
-      return user
+      return UserServices.getUserChallenge(email, challenge_id)
 
     } else {
       throw new Error('Missing information');
     }
   }
 
-  private static getLoginUrl(token: string, admin: boolean, challenge_id: number | undefined): string {
-    if (admin) {
-      return `${FRONT_URL}/login?token=${token}&admin=${admin}`;
+  private static async getAdminUser(email: string): Promise<IUser | null> {
+    const user = await Crud.Read<IUser>('user', ['email'], [email], READ_COLUMNS, false)
+
+    if (user?.is_admin === 0) {
+      throw new Error('The user is not an administrator');
     }
 
-    return `${FRONT_URL}/login?token=${token}&challenge_id=${challenge_id}`;
+    return user
+  }
+
+  private static async getUserChallenge(email: string, challenge_id: number | undefined): Promise<IUser | null> {
+    if (!challenge_id) {
+      throw new Error('Missing challenge ID');
+    }
+
+    const challenge: IChallenge | null = await UserServices.getChallenge(challenge_id)
+
+    let user = await Crud.Read<IUser>('user', ['email'], [email], READ_COLUMNS, false);
+
+    if (user === null && !!challenge) {
+      const response = await Crud.Create<IUserCreate>({
+        email: email,
+        batch_id: challenge.batch_id,
+        is_admin: 0
+      }, 'user');
+      user = await Crud.Read<IUser>('user', ['id'], [response.id], READ_COLUMNS);
+    }
+
+    if (!user) {
+      throw new Error('User cannot be created');
+    }
+
+    return user
+  }
+
+  private static getLoginUrl(token: string, admin: boolean, challenge_id: number | undefined): string {
+    let url = `${FRONT_URL}/login?token=${token}`
+
+    return url += admin ? `&admin=${admin}` : `&challenge_id=${challenge_id}`;
   }
 }
