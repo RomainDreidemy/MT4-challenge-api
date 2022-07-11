@@ -14,13 +14,13 @@ const app = Express();
 
 // Add a list of allowed origins.
 // If you have more origins you would like to add, you can add them to the array below.
-const allowedOrigins = ['http://127.0.0.1:3000'];
+const allowedOrigins = [process.env.FRONT_URL || 'http://127.0.0.1:3000'];
 
 const options: cors.CorsOptions = {
   origin: allowedOrigins
 };
 
-app.use(cors(options))
+app.use(cors(options));
 
 // L'appli parse le corps du message entrant comme du json
 app.use(json());

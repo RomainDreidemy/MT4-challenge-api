@@ -47,6 +47,6 @@ export class UserServices {
   }
 
   private static getLoginUrl(token: string, challenge_id: number): string {
-    return `${FRONT_URL}/login?token=${token}&challenge_id=${challenge_id}`;
+    return `${process.env.FRONT_URL || 'http://127.0.0.1:3000'}/login?token=${token}&challenge_id=${challenge_id}`;
   }
 }
