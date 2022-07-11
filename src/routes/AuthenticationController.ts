@@ -18,7 +18,8 @@ export class UserController {
   public async getUsers(@Body() body: IAuthenticationBody): Promise<IAuthenticationResponse> {
 
     try {
-      await UserServices.authenticate(body.email, body.challenge_id);
+      await UserServices.authenticate(body.email, body.admin, body?.challenge_id);
+
     } catch (err) {
         throw new ApiError(ErrorCode.BadRequest, 'internal/unknown', `Internal server error`, err);
     }
