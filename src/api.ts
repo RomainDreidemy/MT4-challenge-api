@@ -1,4 +1,5 @@
 import Express, { json } from "express";
+import cors from 'cors'
 import swaggerUi from "swagger-ui-express";
 import { requestLogMiddleware } from './classes/Logging/LoggingMiddleware';
 import { DefaultErrorHandler } from './middleware/error-handler';
@@ -10,6 +11,16 @@ const PORT = process.env.PORT || 5050;
 
 // Créer l'objet Express
 const app = Express();
+
+// Add a list of allowed origins.
+// If you have more origins you would like to add, you can add them to the array below.
+const allowedOrigins = [process.env.FRONT_URL || 'http://127.0.0.1:3000'];
+
+const options: cors.CorsOptions = {
+  origin: allowedOrigins
+};
+
+app.use(cors(options));
 
 // L'appli parse le corps du message entrant comme du json
 app.use(json());

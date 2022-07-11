@@ -6,7 +6,7 @@ export class JWT {
   public static get(data: any): string {
     return jwt.sign({
       data,
-      exp: Math.floor(Date.now() / 1000) + (60 * 60) // 1 hour
+      exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24) // 24 hours
     }, APP_SECRET);
   }
 }

@@ -100,7 +100,7 @@ export class UserServices {
   }
 
   private static getLoginUrl(token: string, admin: boolean, challenge_id: number | undefined): string {
-    let url = `${FRONT_URL}/login?token=${token}`
+    let url = `${process.env.FRONT_URL || 'http://127.0.0.1:3000'}/login?token=${token}`
 
     return url += admin ? `&admin=${admin}` : `&challenge_id=${challenge_id}`;
   }
