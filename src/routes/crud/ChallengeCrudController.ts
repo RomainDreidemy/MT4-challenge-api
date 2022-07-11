@@ -70,8 +70,16 @@ export class ChallengeCrudController {
    * Fermeture d'un challenge.
    */
   @Post("/{id}/close")
-  public async close(@Path() id: number): Promise<IUpdateResponse> {
-    return await Crud.Update<IChallengeUpdate>({ is_close: 1 }, TABLE_NAME, ['id'], [id]);
+  public async close(@Path() id: number): Promise<IChallenge> {
+    await Crud.Update<IChallengeUpdate>({ is_close: 1 }, TABLE_NAME, ['id'], [id]);
+
+    const challenge = await Crud.Read<IChallenge>(TABLE_NAME, ['id'], [id], READ_COLUMNS)
+
+    if (challenge === null) {
+      throw new ApiError(ErrorCode.BadRequest, 'sql/not-found', `Could not found a challenge`);
+    }
+
+    return challenge;
   }
 
   /**
