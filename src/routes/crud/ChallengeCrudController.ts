@@ -78,8 +78,8 @@ export class ChallengeCrudController {
    * Récupère les scores pour un challenge.
    */
   @Get("/{id}/scores")
-  public async scores(@Path() id: number): Promise<IChallenge[]> {
-    const response = await Crud.Index<IChallenge>({}, 'score', ['id', 'user_id', 'challenge_id', 'score', 'first_try_at', 'last_try_at'], {challenge_id: id});
+  public async scores(@Path() id: number): Promise<IScore[]> {
+    const response = await Crud.Index<IScore>({}, 'score', ['id', 'user_id', 'challenge_id', 'score', 'first_try_at', 'last_try_at'], {challenge_id: id});
 
     if (response === null) {
       throw new ApiError(ErrorCode.BadRequest, 'sql/not-found', `Could not found a challenge`);
