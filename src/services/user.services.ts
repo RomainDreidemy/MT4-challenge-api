@@ -10,8 +10,8 @@ const READ_COLUMNS = ['id', 'email', 'batch_id', 'is_admin'];
 const FRONT_URL = process.env.FRONT_URL || 'http://127.0.0.1:3000'
 
 export class UserServices {
-  public static async authenticate(email: string, admin: boolean = false, challenge_id: number | undefined) {
-    let user = await UserServices.dispatcherUser(email, admin, challenge_id);
+  public static async authenticate(email: string, challenge_id: number | undefined, isLoadingAdmin: boolean = false) {
+    let user = await UserServices.dispatcherUser(email, isLoadingAdmin, challenge_id);
 
     if (!user) {
       throw new Error('User cannot be found');
@@ -25,7 +25,7 @@ export class UserServices {
     }
 
     const token = JWT.get(jwtData);
-    const url = this.getLoginUrl(token, user.is_admin === 1, challenge_id);
+    const url = this.getLoginUrl(token, isLoadingAdmin, challenge_id);
 
     await Mailer.send(
       email,
@@ -46,11 +46,11 @@ export class UserServices {
   }
 
 
-  private static async dispatcherUser(email: string, admin: boolean, challenge_id: number | undefined): Promise<IUser | null> {
-    if (admin) {
+  private static async dispatcherUser(email: string, isLoadingAdmin: boolean, challenge_id: number | undefined): Promise<IUser | null> {
+    if (isLoadingAdmin) {
       return UserServices.getAdminUser(email)
 
-    } else if (!admin && challenge_id) {
+    } else if (!isLoadingAdmin && challenge_id) {
       return UserServices.getUserChallenge(email, challenge_id)
 
     } else {
@@ -59,9 +59,11 @@ export class UserServices {
   }
 
   private static async getAdminUser(email: string): Promise<IUser | null> {
-    const user = await Crud.Read<IUser>('user', ['email'], [email], READ_COLUMNS, false)
+    const user = await UserServices.getUser(email)
 
-    if (user?.is_admin === 0) {
+    if (!user) {
+      throw new Error('User cannot be created');
+    } else if (user?.is_admin === 0) {
       throw new Error('The user is not an administrator');
     }
 
@@ -75,7 +77,7 @@ export class UserServices {
 
     const challenge: IChallenge | null = await UserServices.getChallenge(challenge_id)
 
-    let user = await Crud.Read<IUser>('user', ['email'], [email], READ_COLUMNS, false);
+    let user = await UserServices.getUser(email)
 
     if (user === null && !!challenge) {
       const response = await Crud.Create<IUserCreate>({
@@ -91,6 +93,10 @@ export class UserServices {
     }
 
     return user
+  }
+
+  private static async getUser(email: string): Promise<IUser | null> {
+    return await Crud.Read<IUser>('user', ['email'], [email], READ_COLUMNS, false);
   }
 
   private static getLoginUrl(token: string, admin: boolean, challenge_id: number | undefined): string {
