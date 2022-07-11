@@ -64,4 +64,12 @@ export class ChallengeCrudController {
   public async delete(@Path() id: number): Promise<IUpdateResponse> {
     return Crud.Delete(TABLE_NAME, 'id', id);
   }
+
+  /**
+   * Fermeture d'un challenge.
+   */
+  @Post("/{id}/close")
+  public async close(@Path() id: number): Promise<IUpdateResponse> {
+    return await Crud.Update<IChallengeUpdate>({ is_close: 1 }, TABLE_NAME, ['id'], [id]);
+  }
 }

@@ -18,7 +18,8 @@ create table if not exists `batch_challenge` (
 create table if not exists `challenge` (
   `id` int primary key auto_increment,
   `name` varchar(255) unique,
-  `batch_id` int not null
+  `batch_id` int not null,
+  `is_close` int not null default 0
 );
 
 create table if not exists `score` (
