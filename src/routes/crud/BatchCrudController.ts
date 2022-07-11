@@ -5,6 +5,7 @@ import {ErrorCode} from "../../classes/Errors/ErrorCode";
 import {ICreateResponse} from "../../types/api/ICreateResponse";
 import {IUpdateResponse} from "../../types/api/IUpdateResponse";
 import {IBatch, IBatchCreate, IBatchUpdate} from "../../types/tables/batch/IBatch";
+import {IChallenge} from "../../types/tables/challenge/IChallenge";
 
 const READ_COLUMNS  = ['id', 'name'];
 const TABLE_NAME    = 'batch'
@@ -63,5 +64,21 @@ export class BatchCrudController {
   @Delete('/{id}')
   public async delete(@Path() id: number): Promise<IUpdateResponse> {
     return Crud.Delete(TABLE_NAME, 'id', id);
+  }
+
+
+
+  /**
+   * Récupère les challenges pour une promo.
+   */
+  @Get("/{id}/challenges")
+  public async challenges(@Path() id: number): Promise<IChallenge[]> {
+    const response = await Crud.Index<IChallenge>({}, 'challenge', ['id', 'name', 'batch_id', 'is_close'], {batch_id: id});
+
+    if (response === null) {
+      throw new ApiError(ErrorCode.BadRequest, 'sql/not-found', `Could not found a batch`);
+    }
+
+    return response.rows;
   }
 }
