@@ -27,11 +27,11 @@ export class ChallengeController {
     const challengeObj = await Crud.Read<IChallenge>('challenge', ['id'], [userRequest.challenge_id], ['id', 'name', 'batch_id']);
 
     if (!user) {
-      throw new ApiError(404, 'sql/not-found', 'Cannot found user in database');
+      throw new ApiError(404, 'sql/not-found', 'L\'utilisateur n\'existe pas.');
     }
 
     if (!challengeObj) {
-      throw new ApiError(404, 'sql/not-found', 'Cannot found challenge in database');
+      throw new ApiError(404, 'sql/not-found', 'Le challenge n\'existe pas.');
     }
 
     const challenge = new ChallengeSolderService(body);

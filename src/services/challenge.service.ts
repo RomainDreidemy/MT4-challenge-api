@@ -44,7 +44,7 @@ export abstract class ChallengeService {
 
   public async start(user: IUser, challenge: IChallenge): Promise<void> {
     if (!user.is_admin && user.batch_id !== challenge.batch_id) {
-      throw new ApiError(404, 'sql/not-found', 'Challenge not found');
+      throw new ApiError(403, 'challenge/not-part', 'Vous ne faites pas parti de la bonne promo.');
     }
 
     try {

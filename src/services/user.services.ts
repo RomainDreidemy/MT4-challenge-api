@@ -98,7 +98,7 @@ export class UserServices {
     }
 
     if (this.canParticipateToChallenge(user, challenge)) {
-      throw new ApiError(403, 'challenge/not-part', 'The user is not part of this challenge');
+      throw new ApiError(403, 'challenge/not-part', 'Vous ne faites pas parti de la bonne promo.');
     }
 
     return user;
