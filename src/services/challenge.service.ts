@@ -9,6 +9,7 @@ import {IUserRequest} from "../types/api/authentication/IUserRequest";
 import {Crud} from "../classes/Crud";
 import {IUser, IUserCreate} from "../types/tables/user/IUser";
 import {IScoreCreate, IScoreUpdate} from "../types/tables/score/IScore";
+import {IChallenge} from "../types/tables/challenge/IChallenge";
 
 export abstract class ChallengeService {
   protected config: IMysqlThroughSSHConfig;
@@ -41,7 +42,11 @@ export abstract class ChallengeService {
     return this.points === this.pointsToWin;
   }
 
-  public async start(user: IUserRequest): Promise<void> {
+  public async start(user: IUser, challenge: IChallenge): Promise<void> {
+    if (!user.is_admin && user.batch_id !== challenge.batch_id) {
+      throw new ApiError(404, 'sql/not-found', 'Challenge not found');
+    }
+
     try {
       let index = 0;
       while (index < this.tests.length) {
@@ -55,7 +60,7 @@ export abstract class ChallengeService {
         throw new ApiError(ErrorCode.InternalError, 'internal/unknown', 'Internal server error', err);
       }
     } finally {
-      await this.handleScore(user.id, user.challenge_id, this.points);
+      await this.handleScore(user.id, challenge.id, this.points);
     }
   }
 
