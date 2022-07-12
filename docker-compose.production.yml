@@ -37,16 +37,16 @@ services:
     container_name: webserver
     restart: unless-stopped
     depends_on:
-      - nodejs            
+      - nodejs
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - web-root:/var/www/html
-      - ./nginx-conf:/etc/nginx/conf.d
+      - ./.docker/nginx-conf:/etc/nginx/conf.d
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/lib/letsencrypt
-      - dhparam:/etc/ssl/certs
+      - ./.docker/dhparam:/etc/ssl/certs
     networks:
       - app-network
 
@@ -77,7 +77,7 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /home/adminsys/challenge/dhparam/
+      device: /home/adminsys/challenge/.docker/dhparam/
       o: bind
 
 networks:
