@@ -58,7 +58,7 @@ export class UserServices {
     }
   }
 
-  private static async getAdminUser(email: string): Promise<IUser | null> {
+  private static async getAdminUser(email: string): Promise<IUser> {
     const user = await UserServices.getUser(email)
 
     if (!user) {
@@ -70,29 +70,38 @@ export class UserServices {
     return user
   }
 
-  private static async getUserChallenge(email: string, challenge_id: number | undefined): Promise<IUser | null> {
+  private static async getUserChallenge(email: string, challenge_id: number | undefined): Promise<IUser> {
     if (!challenge_id) {
       throw new Error('Missing challenge ID');
     }
 
     const challenge: IChallenge | null = await UserServices.getChallenge(challenge_id)
 
+    if (!challenge) {
+      throw new ApiError(404, 'sql/not-found', 'Challenge not found');
+    }
+
     let user = await UserServices.getUser(email)
 
-    if (user === null && !!challenge) {
+    if (!user) {
       const response = await Crud.Create<IUserCreate>({
         email: email,
         batch_id: challenge.batch_id,
         is_admin: 0
       }, 'user');
+
       user = await Crud.Read<IUser>('user', ['id'], [response.id], READ_COLUMNS);
     }
 
     if (!user) {
-      throw new Error('User cannot be created');
+      throw new ApiError(500, 'sql/failed', 'User cannot be created');
     }
 
-    return user
+    if (this.canParticipateToChallenge(user, challenge)) {
+      throw new ApiError(403, 'challenge/not-part', 'The user is not part of this challenge');
+    }
+
+    return user;
   }
 
   private static async getUser(email: string): Promise<IUser | null> {
@@ -103,5 +112,9 @@ export class UserServices {
     let url = `${process.env.FRONT_URL || 'http://127.0.0.1:3000'}/login?token=${token}`
 
     return url += admin ? `&admin=${admin}` : `&challenge_id=${challenge_id}`;
+  }
+
+  private static canParticipateToChallenge(user: IUser, challenge: IChallenge): boolean {
+    return challenge.batch_id !== user.batch_id;
   }
 }
