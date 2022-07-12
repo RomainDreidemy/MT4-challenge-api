@@ -5,3 +5,5 @@
 /database/dbms-data
 
 .env
+
+.docker/dhparam/*.pem

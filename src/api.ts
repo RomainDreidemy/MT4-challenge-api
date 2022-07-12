@@ -20,6 +20,9 @@ const options: cors.CorsOptions = {
   origin: allowedOrigins
 };
 
+
+app.use(Express.static(__dirname, { dotfiles: 'allow' } ));
+
 app.use(cors(options));
 
 // L'appli parse le corps du message entrant comme du json
@@ -45,6 +48,7 @@ app.use(
   })
 );
 
+console.log(allowedOrigins);
 
 // Lancer le serveur
 app.listen(PORT,
