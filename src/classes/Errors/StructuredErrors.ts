@@ -19,5 +19,8 @@ export type StructuredErrors =
   'ssh/bad-information' |
 
   // Default
-  'internal/unknown'
+  'internal/unknown' |
+
+  // Challenge
+  'challenge/not-part'
 ;
