@@ -1,4 +1,4 @@
-import { Body, Post, Route } from 'tsoa';
+import {Body, Post, Route} from 'tsoa';
 import {IAuthenticationBody} from "../types/api/authentication/IAuthenticationBody";
 import {ApiError} from "../classes/Errors/ApiError";
 import {ErrorCode} from "../classes/Errors/ErrorCode";
@@ -18,11 +18,12 @@ export class UserController {
   public async getUsers(@Body() body: IAuthenticationBody): Promise<IAuthenticationResponse> {
 
     try {
-      await UserServices.authenticate(body.email, body.challenge_id);
+      await UserServices.authenticate(body.email, body?.challenge_id, body?.admin);
+
     } catch (err) {
-        throw new ApiError(ErrorCode.BadRequest, 'internal/unknown', `Internal server error`, err);
+      throw new ApiError(ErrorCode.BadRequest, 'internal/unknown', `Internal server error`, err);
     }
 
-    return { email: body.email };
+    return {email: body.email};
   }
 }

@@ -1,4 +1,5 @@
 export interface IAuthenticationBody {
   email: string;
-  challenge_id: number
+  admin: boolean;
+  challenge_id?: number;
 }
