@@ -29,7 +29,7 @@ services:
       dockerfile: ./Dockerfile.prod
     container_name: stage_database_api
     ports:
-      - "80:5050"
+      - "443:5050"
     networks:
       - api-stage-network
     restart: always
@@ -37,6 +37,8 @@ services:
       - .env
     depends_on:
       - stage-dbms
+    volumes:
+      - ./secret:/app/build/.well-known/acme-challenge
     labels:
       co.elastic.logs/processors.1.add_fields.fields.logging_container: "stage-api"
     logging:
