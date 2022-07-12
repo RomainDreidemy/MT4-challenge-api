@@ -7,8 +7,8 @@ import {ICreateResponse} from "../../types/api/ICreateResponse";
 import {IUpdateResponse} from "../../types/api/IUpdateResponse";
 import {IScore} from "../../types/tables/score/IScore";
 
-const READ_COLUMNS  = ['id', 'name', 'batch_id'];
-const TABLE_NAME    = 'challenge'
+const READ_COLUMNS = ['id', 'name', 'batch_id'];
+const TABLE_NAME = 'challenge'
 
 /**
  * Les challenges de la plateforme.
@@ -71,7 +71,7 @@ export class ChallengeCrudController {
    */
   @Post("/{id}/close")
   public async close(@Path() id: number): Promise<IChallenge> {
-    await Crud.Update<IChallengeUpdate>({ is_close: 1 }, TABLE_NAME, ['id'], [id]);
+    await Crud.Update<IChallengeUpdate>({is_close: 1}, TABLE_NAME, ['id'], [id]);
 
     const challenge = await Crud.Read<IChallenge>(TABLE_NAME, ['id'], [id], READ_COLUMNS)
 
@@ -87,12 +87,26 @@ export class ChallengeCrudController {
    */
   @Get("/{id}/scores")
   public async scores(@Path() id: number): Promise<IScore[]> {
-    const response = await Crud.Index<IScore>({}, 'score', ['id', 'user_id', 'challenge_id', 'score', 'first_try_at', 'last_try_at'], {challenge_id: id});
+
+    const scoreQuery = `
+        select score.id           as id,
+               score.score        as score,
+               score.first_try_at as first_try_at,
+               score.last_try_at  as last_try_at,
+               user.email         as email
+        from score
+                 inner join user
+        where score.user_id = user.id
+          and score.challenge_id = ?
+        order by score.score desc;
+    `
+
+    const response = await Crud.Query<IScore[]>(scoreQuery, {challenge_id: id});
 
     if (response === null) {
       throw new ApiError(ErrorCode.BadRequest, 'sql/not-found', `Could not found a challenge`);
     }
 
-    return response.rows;
+    return response
   }
 }
