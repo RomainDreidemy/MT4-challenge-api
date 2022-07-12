@@ -25,7 +25,7 @@ services:
       context: .
       dockerfile: Dockerfile.prod
     image: nodejs
-    container_name: nodeejs
+    container_name: nodejs
     restart: unless-stopped
     env_file:
       - .env
@@ -40,13 +40,13 @@ services:
       - nodejs
     ports:
       - "80:80"
-      - "443:443"
+        # - "443:443"
     volumes:
       - web-root:/var/www/html
       - ./.docker/nginx-conf:/etc/nginx/conf.d
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/lib/letsencrypt
-      - ./.docker/dhparam:/etc/ssl/certs
+        #- ./.docker/dhparam:/etc/ssl/certs
     networks:
       - app-network
 
@@ -61,7 +61,7 @@ services:
       - webserver
     networks:
       - app-network
-    command: certonly --webroot --webroot-path=/var/www/html --email dreidemyromain@gmail.com --agree-tos --no-eff-email --force-renewal -d challenge.jean-tostivint.net  -d www.challenge.jean-tostivint.net
+    command: certonly -v --webroot --webroot-path=/var/www/html --email dreidemyromain@gmail.com --agree-tos --no-eff-email --staging -d challenges.jean-tostivint.net  -d www.challenges.jean-tostivint.net
 
 volumes:
   database:
