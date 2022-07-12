@@ -141,4 +141,11 @@ export class Crud {
     }
   }
 
+  public static async Query<T>(query: string, where?: IReadWhere): Promise<T> {
+    const db = DB.Connection;
+
+    const data = await db.query<RowDataPacket[] & T>(query, [where]);
+
+    return data[0]
+  }
 }
