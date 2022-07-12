@@ -28,8 +28,8 @@ create table if not exists `score` (
 
 alter table `user` add foreign key (`batch_id`) references `batch` (`id`) on delete cascade;
 
-alter table `batch_challenge` add foreign key (`batch_id`) references `batch` (`id`) on delete cascade;
-
 alter table `score` add foreign key (`user_id`) references `user` (`id`) on delete cascade;
 
 alter table `score` add foreign key (`challenge_id`) references `challenge` (`id`) on delete cascade;
+
+alter table `challenge` add foreign key (`batch_id`) references `batch` (`id`) on delete cascade;
