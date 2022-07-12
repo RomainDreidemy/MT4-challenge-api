@@ -1,13 +1,36 @@
 version: '3'
 
 services:
+  database:
+    image: mariadb
+    restart: always
+    container_name: database_challenge
+    ports:
+      - "3310:3306"
+    env_file:
+      - .env
+    command: [
+      "--character-set-server=utf8mb4",
+      "--collation-server=utf8mb4_unicode_ci",
+    ]
+    volumes:
+      - database:/var/lib/mysql
+      - ./database/mariadb.cnf:/etc/mysql/mariadb.cnf
+      - ./database/ddl/ddl.sql:/docker-entrypoint-initdb.d/999-ddl.sql
+    networks:
+      - app-network
+  
   nodejs:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     image: nodejs
     container_name: nodejs
     restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - database
     networks:
       - app-network
 
@@ -17,11 +40,13 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - web-root:/var/www/html
       - ./.docker/nginx-conf:/etc/nginx/conf.d
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/lib/letsencrypt
+      - dhparam:/etc/ssl/certs
     depends_on:
       - nodejs
     networks:
@@ -36,7 +61,7 @@ services:
       - web-root:/var/www/html
     depends_on:
       - webserver
-    command: certonly --webroot --webroot-path=/var/www/html --email dreidemyromain@gmail.com --agree-tos --no-eff-email --staging -d challenges.jean-tostivint.net  -d www.challenges.jean-tostivint.net 
+    command: certonly --webroot --webroot-path=/var/www/html --email dreidemyromain@gmail.com --agree-tos --no-eff-email --force-renewal -d challenges.jean-tostivint.net  -d www.challenges.jean-tostivint.net 
 
 volumes:
   certbot-etc:
@@ -47,6 +72,13 @@ volumes:
       type: none
       device: /home/adminsys/challenge/public/
       o: bind
+  dhparam:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/adminsys/challenge/.docker/dhparam/
+      o: bind
+  database:
 
 networks:
   app-network:
