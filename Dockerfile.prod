@@ -8,6 +8,7 @@ RUN npm run build
 FROM node:18-alpine AS api
 WORKDIR app
 COPY --from=api-builder /app/build ./build
+COPY --from=api-builder /app/build/public ./build/public
 COPY package* ./
 RUN npm install --omit=dev
 
