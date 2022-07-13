@@ -95,9 +95,8 @@ export class ChallengeCrudController {
                score.last_try_at  as last_try_at,
                user.email         as email
         from score
-                 inner join user
-        where score.user_id = user.id
-          and score.challenge_id = ?
+        inner join user u on u.id = score.user_id
+        where score.challenge_id = ?
         order by score.score desc;
     `
 
