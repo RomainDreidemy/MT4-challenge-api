@@ -14,7 +14,7 @@ Une note est renvoyé à chaque étape que l'utilisateur réussi ou non.
 
 ### Technos
 
-Backend: Nodejs + Express + Typescript
+Backend: Nodejs + Express + Typescript  
 Frontend: ReactJS + Typescript  
 
 ## Utilisation
@@ -37,4 +37,4 @@ Ensuite il suffit de suivre les étapes qu'ils vous sont indiqués.
 
 ### Comment sont géré les notes ?
 
-L'application enregistre la note si seulement elle est supérieur à une note enregistré précédement pour le même challenge.
+L'application enregistre la note seulement si elle est supérieur à une note enregistré précédement pour le même challenge.
