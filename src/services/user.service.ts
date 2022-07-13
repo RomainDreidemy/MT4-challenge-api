@@ -9,9 +9,9 @@ import {Mailer} from "../classes/Mailer";
 const READ_COLUMNS = ['id', 'email', 'batch_id', 'is_admin'];
 const FRONT_URL = process.env.FRONT_URL || 'http://127.0.0.1:3000'
 
-export class UserServices {
+export class UserService {
   public static async authenticate(email: string, challenge_id: number | undefined, isLoadingAdmin: boolean = false) {
-    let user = await UserServices.dispatcherUser(email, isLoadingAdmin, challenge_id);
+    let user = await UserService.dispatcherUser(email, isLoadingAdmin, challenge_id);
 
     if (!user) {
       throw new Error('User cannot be found');
@@ -48,10 +48,10 @@ export class UserServices {
 
   private static async dispatcherUser(email: string, isLoadingAdmin: boolean, challenge_id: number | undefined): Promise<IUser | null> {
     if (isLoadingAdmin) {
-      return UserServices.getAdminUser(email)
+      return UserService.getAdminUser(email)
 
     } else if (!isLoadingAdmin && challenge_id) {
-      return UserServices.getUserChallenge(email, challenge_id)
+      return UserService.getUserChallenge(email, challenge_id)
 
     } else {
       throw new Error('Missing information');
@@ -59,7 +59,7 @@ export class UserServices {
   }
 
   private static async getAdminUser(email: string): Promise<IUser> {
-    const user = await UserServices.getUser(email)
+    const user = await UserService.getUser(email)
 
     if (!user) {
       throw new Error('User cannot be created');
@@ -75,13 +75,13 @@ export class UserServices {
       throw new Error('Missing challenge ID');
     }
 
-    const challenge: IChallenge | null = await UserServices.getChallenge(challenge_id)
+    const challenge: IChallenge | null = await UserService.getChallenge(challenge_id)
 
     if (!challenge) {
       throw new ApiError(404, 'sql/not-found', 'Challenge not found');
     }
 
-    let user = await UserServices.getUser(email)
+    let user = await UserService.getUser(email)
 
     if (!user) {
       const response = await Crud.Create<IUserCreate>({

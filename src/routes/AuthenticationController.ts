@@ -3,7 +3,7 @@ import {IAuthenticationBody} from "../types/api/authentication/IAuthenticationBo
 import {ApiError} from "../classes/Errors/ApiError";
 import {ErrorCode} from "../classes/Errors/ErrorCode";
 import {IAuthenticationResponse} from "../types/api/authentication/IAuthenticationResponse";
-import {UserServices} from "../services/user.services";
+import {UserService} from "../services/user.service";
 
 /**
  * Un utilisateur de la plateforme.
@@ -17,7 +17,7 @@ export class UserController {
   @Post()
   public async getUsers(@Body() body: IAuthenticationBody): Promise<IAuthenticationResponse> {
 
-    await UserServices.authenticate(body.email, body?.challenge_id, body?.admin);
+    await UserService.authenticate(body.email, body?.challenge_id, body?.admin);
 
     return {email: body.email};
   }
