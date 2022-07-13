@@ -97,7 +97,7 @@ export class UserService {
       throw new ApiError(500, 'sql/failed', 'User cannot be created');
     }
 
-    if (this.canParticipateToChallenge(user, challenge)) {
+    if (!this.canParticipateToChallenge(user, challenge)) {
       throw new ApiError(403, 'challenge/not-part', 'Vous ne faites pas parti de la bonne promo.');
     }
 
@@ -115,6 +115,6 @@ export class UserService {
   }
 
   private static canParticipateToChallenge(user: IUser, challenge: IChallenge): boolean {
-    return challenge.batch_id !== user.batch_id;
+    return user.is_admin === 1 || challenge.batch_id === user.batch_id;
   }
 }
