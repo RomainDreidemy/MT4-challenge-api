@@ -38,6 +38,15 @@ Une fois créée vous pourrez copier le lien qui vous ai donné et l'envoyer à 
 En tant qu'élève le professeur vous partagera un lien. En arrivant sur ce lien, vous devrez renseigner votre adresse email pour recevoir votre lien de connexion.  
 Ensuite, il suffit de suivre les étapes qu'ils vous sont indiqués.
 
-### Comment sont géré les notes ?
+### Comment sont gérées les notes ?
 
 L'application enregistre la note si elle est supérieur à une note enregistrée précédemment pour le même challenge.
+
+
+## Base de données (MPD)
+
+![MPD](assets/doc/MPD.png)
+
+Une promotion (Batch Entity) peut avoir plusieurs challenges.
+Un user (User entity) ne peut participer qu'aux challenges de sa promotion.
+Un score (Score entity) est lié à un challenge et à un utilisateur
