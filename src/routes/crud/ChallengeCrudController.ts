@@ -96,7 +96,7 @@ export class ChallengeCrudController {
                u.email         as email
         from score
         inner join user u on u.id = score.user_id
-        where score.challenge_id = 5
+        where score.challenge_id = ${id}
         order by score.score desc;
     `
 
