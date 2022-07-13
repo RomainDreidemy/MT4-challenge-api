@@ -28,7 +28,8 @@ export class MysqlThroughSSH {
                 resolve(connection);
               });
             });
-        }).connect(this.getSshConnectConfig(config));
+        }).on('error', (err) => reject(err))
+          .connect(this.getSshConnectConfig(config));
       })
   }
 
